@@ -1,0 +1,1 @@
+The place were all images are stored and served from
