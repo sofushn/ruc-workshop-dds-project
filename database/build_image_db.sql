@@ -15,5 +15,5 @@ INSERT INTO image (x,y,reference_to_image_store,relation_to_other_images) VALUES
 INSERT INTO image (x,y,reference_to_image_store,relation_to_other_images) VALUES 
 (1201.2001,2354.4351,'test2','test2')
 
-select* from image
+--select* from image
 
