@@ -1,26 +1,33 @@
+import { fetchImage } from "./apiService.js";
+
+let imageHostUrl = "http://localhost:5008/images/";
+let mapImage = document.getElementById('mapImage');
+mapImage.src = imageHostUrl+"2dmap.jpg";
+
 let panorama = pannellum.viewer('panorama', {
     "type": "equirectangular",
-    "panorama": "data/1.jpg",
+    "panorama": imageHostUrl+"1.jpg",
     "autoLoad": true,
     "showControls": false,
 });
 
+
 let locationData = [{
     "latitude": 55.651459,
     "longitude": 12.134499,
-    "image": "data/1.jpg"
+    "image": "1.jpg"
 }, {
     "latitude": 55.653372,
     "longitude": 12.140358,
-    "image": "data/2.jpg"
+    "image": "2.jpg"
 }, {
     "latitude": 55.652658,
     "longitude": 12.139993,
-    "image": "data/3.jpg"
+    "image": "3.jpg"
 }, {
     "latitude": 55.654111,
     "longitude": 12.138877,
-    "image": "data/4.jpg"
+    "image": "4.jpg"
 }];
 
 let mapBoundaries = {
@@ -28,7 +35,6 @@ let mapBoundaries = {
     southWest: { lat: 55.651107, lng: 12.134139 },
 };
 
-let mapImage = document.getElementById('mapImage');
 locationData.forEach((location, index) => {
     let button = document.createElement('button');
     button.innerHTML = index + 1; // Button label
@@ -45,9 +51,10 @@ locationData.forEach((location, index) => {
     button.style.zIndex = 1000;
 
     button.addEventListener('click', () => {
+        panorama.destroy();
         panorama = pannellum.viewer('panorama', {
             "type": "equirectangular",
-            "panorama": location.image,
+            "panorama": imageHostUrl+location.image,
             "autoLoad": true,
             "showControls": false,
         });
