@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: imgstore
-        image: imgstore
+        image: imgstore:dev
         ports:
-        - containerPort: 80
+        - containerPort: 8080
