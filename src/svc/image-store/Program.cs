@@ -4,11 +4,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddCors();
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+}
 
 app.UseHttpsRedirection();
 
