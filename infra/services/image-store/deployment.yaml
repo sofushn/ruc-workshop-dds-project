@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: imgstore-deployment
+  labels:
+    app: imgstore
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: imgstore
+  template:
+    metadata:
+      labels:
+        app: imgstore
+    spec:
+      containers:
+      - name: imgstore
+        image: imgstore:dev
+        ports:
+        - containerPort: 8080
