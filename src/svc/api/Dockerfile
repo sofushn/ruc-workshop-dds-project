@@ -10,19 +10,19 @@ EXPOSE 8081
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-COPY ["api.csproj", "."]
+COPY ["Api.csproj", "."]
 RUN dotnet restore
 COPY . .
 
-RUN dotnet build "api.csproj" -c Release -o /app/build
+RUN dotnet build "Api.csproj" -c Release -o /app/build
 
 # Publish stage
 FROM build AS publish
-RUN dotnet publish "api.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Final stage
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-ENTRYPOINT ["dotnet", "api.dll"]
+ENTRYPOINT ["dotnet", "Api.dll"]
