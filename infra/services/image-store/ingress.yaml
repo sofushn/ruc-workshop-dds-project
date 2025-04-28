@@ -15,3 +15,10 @@ spec:
                 name:  imgstore-service
                 port:
                   number: 80
+          - path: /errors/404
+            pathType: Prefix
+            backend:
+              service:
+                name:  imgstore-service
+                port:
+                  number: 80
