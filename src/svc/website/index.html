@@ -12,6 +12,16 @@
     <img alt="Map" id="mapImage" style="position: relative; width: 100%; height: 100%;"/>
     </div>
     <div id="panorama" style="width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 5;"></div>
+    <div id="dataInput" style="position: fixed; top: 0; right: 0; z-index: 20; background-color: white; padding: 10px;">
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" value="0"><br>
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" value="0"><br>
+        <label for="image_id">Image Id:</label>
+        <input type="text" id="image_id" value="0"><br>
+        <button id="postButton" onclick="postImageData()">Post</button>
+        <button id="fetchButton" onclick="getImageData()">Get</button>
+        <button id="placeholderDataButton" onclick="postPlaceholderData()">Post Placeholder Data</button>
 
 <script src="src/index.js"></script>
 </body>

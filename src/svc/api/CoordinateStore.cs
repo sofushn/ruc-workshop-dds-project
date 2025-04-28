@@ -1,8 +1,10 @@
+using System.Collections.Concurrent;
+
 namespace Api;
 
 public class CoordinateStore
 {
-    private readonly Dictionary<string, GPSCoordinate> _coordinates = new();
+    private readonly ConcurrentDictionary<string, GPSCoordinate> _coordinates = new();
 
     public IEnumerable<GPSCoordinate> GetAll() => _coordinates.Values;
 
@@ -14,11 +16,9 @@ public class CoordinateStore
 
     public bool Update(string id, GPSCoordinate updated)
     {
-        if (!_coordinates.ContainsKey(id)) return false;
-        _coordinates[id] = updated;
-        return true;
+        return _coordinates.TryUpdate(id, updated, _coordinates[id]);
     }
 
     public bool Delete(string id) =>
-        _coordinates.Remove(id);
+        _coordinates.TryRemove(id, out _);
 }
