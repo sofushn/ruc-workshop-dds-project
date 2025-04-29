@@ -19,4 +19,4 @@ spec:
         - containerPort: 8080
         env:
         - name: ASPNETCORE_ENVIROMENT
-        value: "Production" 
+        value: "Production" #Setting for performance and security.
