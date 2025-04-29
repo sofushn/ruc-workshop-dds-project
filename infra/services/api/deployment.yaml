@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-api
+  namespace: development
 spec:
-  replicas: 1 #Change?
+  replicas: 3
   selector:
     matchLabels:
       app: backend-api
@@ -14,9 +15,9 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: 
+        image: backend-api:latest
         ports:
         - containerPort: 8080
         env:
         - name: ASPNETCORE_ENVIROMENT
-        value: "Production" #Setting for performance and security.
+          value: "development"
