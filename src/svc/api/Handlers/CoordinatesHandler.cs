@@ -6,7 +6,7 @@ namespace Api.Handlers;
 
 public class CoordinatesHandler {
     public static IResult GetAll(int mapId, [FromServices] Context.Context context)
-        => Results.Ok(context.GPSCoordinates.AsNoTracking());
+        => Results.Ok(context.GPSCoordinates.Where(x => x.MapId == mapId).AsNoTracking());
     
     public static IResult GetById(int coordinateId, [FromServices] Context.Context context)
     {
