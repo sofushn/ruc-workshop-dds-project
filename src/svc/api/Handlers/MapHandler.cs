@@ -8,6 +8,8 @@ namespace Api.Handlers;
 public class MapHandlers
 {
 
+    public static IResult GetAll(int id, [FromServices] Context.Context context)
+      => Results.Ok(context.Maps.AsNoTracking());
     public static IResult GetById(int mapId, [FromServices] Context.Context context)
     {
         var map = context.Maps.FirstOrDefault(m => m.Id == mapId);

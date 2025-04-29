@@ -4,8 +4,8 @@ using Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ImdbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Host=localhost;Port=5432;Database=database;Username=postgres;Password=postgres")));
+builder.Services.AddDbContext<Context>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDatabase")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
