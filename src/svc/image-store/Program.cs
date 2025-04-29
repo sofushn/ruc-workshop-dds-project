@@ -39,6 +39,33 @@ app.MapGet("/images", async (HttpContext context) =>
 .WithName("GetImageLinks")
 .WithOpenApi();
 
+app.MapPost("/images", async (IFormFile file, string ?fileName, HttpRequest request) =>
+{
+    if(string.IsNullOrEmpty(fileName))
+    {
+        return Results.BadRequest("File name is required. Please try again!");
+    }
+
+    var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
+
+    if (!Directory.Exists(imagesPath))
+    {
+        Directory.CreateDirectory(imagesPath);
+    }
+
+    var filePath = Path.Combine(imagesPath, fileName+".jpg");
+    
+    using var stream = File.OpenWrite(filePath);
+    await file.CopyToAsync(stream);
+
+    var imgUrl = $"{request.Scheme}://{request.Host}/images/{fileName}.jpg";
+
+    return Results.Ok(imgUrl);
+})
+.WithName("PostImage")
+//.WithOpenApi()
+.DisableAntiforgery();
+
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
 app.MapGet("/errors/404", async (HttpContext context) =>
