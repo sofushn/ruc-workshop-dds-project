@@ -1,0 +1,29 @@
+{
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits"
+        }
+      ],
+      [
+        "@semantic-release-plus/docker",
+        {
+          "name": "ghcr.io/sofushn/ruc-workshop-dds-project",
+          "registry": "ghcr.io",
+          "publishChannelTag": false
+        }
+      ]
+    ]
+  },
+  "dependencies": {
+    "semantic-release": "^24.0.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "semantic-release-commit-filter": "^1.0.0",
+    "@semantic-release-plus/docker": "^3.1.0"
+  }
+}
