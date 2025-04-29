@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-api-ingress
+spec:
+  rules:
+  - host: backend.local #Changeable
+    http:
+      paths:
+      - pathtype: Prefix
+        path: "/"
+        backend:
+          service:
+            name: backend-api-service
+            port:
+              number: 80
