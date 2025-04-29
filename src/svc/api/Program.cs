@@ -1,6 +1,11 @@
+using Npgsql;
+using Microsoft.EntityFrameworkCore;
 using Api;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ImdbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Host=localhost;Port=5432;Database=database;Username=postgres;Password=postgres")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
