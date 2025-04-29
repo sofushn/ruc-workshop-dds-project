@@ -39,7 +39,7 @@ app.MapGet("/images", async (HttpContext context) =>
 .WithName("GetImageLinks")
 .WithOpenApi();
 
-app.MapPost("/images", async (IFormFile file, string ?fileName) =>
+app.MapPost("/images", async (IFormFile file, string ?fileName, HttpRequest request) =>
 {
     if(string.IsNullOrEmpty(fileName))
     {
@@ -58,7 +58,9 @@ app.MapPost("/images", async (IFormFile file, string ?fileName) =>
     using var stream = File.OpenWrite(filePath);
     await file.CopyToAsync(stream);
 
-    return Results.Ok(filePath);
+    var imgUrl = $"{request.Scheme}://{request.Host}/images/{fileName}.jpg";
+
+    return Results.Ok(imgUrl);
 })
 .WithName("PostImage")
 //.WithOpenApi()
