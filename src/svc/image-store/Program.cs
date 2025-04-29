@@ -24,7 +24,9 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-app.MapGet("/images", async (HttpContext context) =>
+var image = app.MapGroup("/image-api");
+
+image.MapGet("images", async (HttpContext context) =>
 {
     var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
 
@@ -36,14 +38,18 @@ app.MapGet("/images", async (HttpContext context) =>
 
     return Results.Ok(imageFiles);
 })
-.WithName("GetImageLinks")
-.WithOpenApi();
+.WithName("GetImageLinks");
 
-app.MapPost("/images", async (IFormFile file, string ?fileName, HttpRequest request) =>
+image.MapPost("", async (IFormFile? file, string? fileName, HttpRequest request) =>
 {
     if(string.IsNullOrEmpty(fileName))
     {
         return Results.BadRequest("File name is required. Please try again!");
+    }
+
+    if(file == null || file.Length == 0)
+    {
+        return Results.BadRequest("File is required. Please try again!");
     }
 
     var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
@@ -63,12 +69,11 @@ app.MapPost("/images", async (IFormFile file, string ?fileName, HttpRequest requ
     return Results.Ok(imgUrl);
 })
 .WithName("PostImage")
-//.WithOpenApi()
 .DisableAntiforgery();
 
 app.UseStatusCodePagesWithRedirects("/errors/{0}");
 
-app.MapGet("/errors/404", async (HttpContext context) =>
+image.MapGet("errors/404", async (HttpContext context) =>
 {
 
     using HttpClient client = new();
