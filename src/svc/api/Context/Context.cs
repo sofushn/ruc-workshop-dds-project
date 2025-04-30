@@ -1,24 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 
 
 
 namespace Api;
-public class Context : DbContext
+public class MetadataContext : DbContext
 {
     private readonly IConfiguration _configuration;
 
-    public Context()
-    {
-    }
-
-    public Context(DbContextOptions<Context> options, IConfiguration configuration)
+    public MetadataContext(DbContextOptions<MetadataContext> options, IConfiguration configuration)
     : base(options)
     {
         _configuration = configuration;
