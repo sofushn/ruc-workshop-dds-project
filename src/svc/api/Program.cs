@@ -1,12 +1,16 @@
-using Api;
+using Npgsql;
+using Microsoft.EntityFrameworkCore;
+using Api.Context;
+using Api.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<Context>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDatabase")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
-
-builder.Services.AddSingleton<CoordinateStore>();
 
 var app = builder.Build();
 
@@ -24,41 +28,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/coordinates", CoordinatesHandler.GetAll);
-app.MapGet("/coordinates/{imageId}", CoordinatesHandler.GetById);
-app.MapPost("/coordinates", CoordinatesHandler.Create);
-app.MapPut("/coordinates/{imageId}", CoordinatesHandler.Update);
-app.MapDelete("/coordinates/{imageId}", CoordinatesHandler.Delete);
+app.MapGet("/map/{mapId}/coordinates", CoordinatesHandler.GetAll);
+app.MapGet("/coordinates/{coordinateId}", CoordinatesHandler.GetById);
+app.MapPost("/coordinates/{coordinateId}", CoordinatesHandler.Create);
+app.MapPut("/coordinates/{coordinateId}", CoordinatesHandler.Update);
+app.MapDelete("/coordinates/{coordinateId}", CoordinatesHandler.Delete);
 
-// Add dummy data to the in-memory store, remove later.
-var coordinateStore = app.Services.GetRequiredService<CoordinateStore>();
-
-coordinateStore.Add(new GPSCoordinate
-{
-    ImageId = "image-01",
-    X = 12.34,
-    Y = 56.78
-});
-
-coordinateStore.Add(new GPSCoordinate
-{
-    ImageId = "image-02",
-    X = 98.76,
-    Y = 54.32
-});
-
-coordinateStore.Add(new GPSCoordinate
-{
-    ImageId = "image-03",
-    X = 66.81,
-    Y = 32.44
-});
-
-coordinateStore.Add(new GPSCoordinate
-{
-    ImageId = "image-04",
-    X = 58.06,
-    Y = 74.28
-});
+app.MapGet("/map", MapHandler.GetAll);
+app.MapGet("/map/{mapId}", MapHandler.GetById);
 
 app.Run();
