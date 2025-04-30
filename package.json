@@ -11,11 +11,10 @@
         }
       ],
       [
-        "@semantic-release-plus/docker",
+        "@semantic-release/exec",
         {
-          "name": "ghcr.io/sofushn/ruc-workshop-dds-project",
-          "registry": "ghcr.io",
-          "publishChannelTag": false
+          "verifyConditionsCmd": "echo ${env.GITHUB_TOKEN} | docker login ghcr.io -u ${env.DOCKER_USERNAME} --password-stdin",
+          "publishCmd": "docker tag sofushn/ruc-workshop-dds-project ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag} && docker push ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag}"
         }
       ]
     ]
@@ -24,6 +23,6 @@
     "semantic-release": "^24.0.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "semantic-release-commit-filter": "^1.0.0",
-    "@semantic-release-plus/docker": "^3.1.0"
+    "@eclass/semantic-release-docker": "^4.0.0"
   }
 }
