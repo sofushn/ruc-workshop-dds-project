@@ -48,4 +48,4 @@ jobs:
         uses: actions/checkout@v4
       - name: Build docker image
         working-directory: ./src/svc/${{ matrix.service }}
-        run: docker build -t ghcr.io/sofushn/ruc-workshop-dds-project .
+        run: docker build -t ghcr.io/sofushn/ruc-workshop-dds-project --label "org.opencontainers.image.source=https://github.com/sofushn/ruc-workshop-dds-project" .
