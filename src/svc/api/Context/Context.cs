@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 
 
-namespace Api.Context;
+namespace Api;
 public class Context : DbContext
 {
     private readonly IConfiguration _configuration;

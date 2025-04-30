@@ -1,8 +1,7 @@
-using Api.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Handlers;
+namespace Api;
 
 public class CoordinatesHandler {
     public static IResult GetAll(int mapId, [FromServices] Context.Context context)

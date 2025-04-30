@@ -1,4 +1,4 @@
-namespace Api.Context;
+namespace Api;
 
 public class GPSCoordinate {
     public required int Id {get; set;}
