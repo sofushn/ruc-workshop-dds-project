@@ -1,1 +1,1 @@
-The frontend containing website for showing and navigating images
+The frontend containing website for showing and navigating images.
