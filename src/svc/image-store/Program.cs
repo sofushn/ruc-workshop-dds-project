@@ -24,11 +24,18 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/images"
 });
 
-app.MapGet("/images", async (HttpContext context) =>
+var image = app.MapGroup("/image-api");
+
+image.MapGet("images", async (HttpContext context) =>
 {
     var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
 
-    var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}/images";
+    if(!Directory.EnumerateFiles(imagesPath).Any())
+    {
+        return Results.NotFound("No images found.");
+    }
+
+    var baseUrl = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}";
 
     var imageFiles = await Task.Run(() => Directory.EnumerateFiles(imagesPath)
                                   .Select(Path.GetFileName)
@@ -36,59 +43,46 @@ app.MapGet("/images", async (HttpContext context) =>
 
     return Results.Ok(imageFiles);
 })
-.WithName("GetImageLinks")
-.WithOpenApi();
+.WithName("GetImageLinks");
 
-app.MapPost("/images", async (IFormFile file, string ?fileName, HttpRequest request) =>
+image.MapGet("images/{fileName}", (string fileName) =>
+{
+    var filePath = Path.Combine(builder.Environment.ContentRootPath, "Images", fileName);
+
+    if (!File.Exists(filePath))
+    {
+        return Results.NotFound("Image not found.");
+    }
+
+    return Results.File(filePath, "image/jpeg");
+})
+.WithName("GetImage");
+
+image.MapPost("images", async (IFormFile? file, string? fileName, HttpRequest request) =>
 {
     if(string.IsNullOrEmpty(fileName))
     {
         return Results.BadRequest("File name is required. Please try again!");
     }
 
-    var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
-
-    if (!Directory.Exists(imagesPath))
+    if(file == null || file.Length == 0)
     {
-        Directory.CreateDirectory(imagesPath);
+        return Results.BadRequest("File is required. Please try again!");
     }
+
+    var imagesPath = Path.Combine(builder.Environment.ContentRootPath, "Images");
 
     var filePath = Path.Combine(imagesPath, fileName+".jpg");
     
     using var stream = File.OpenWrite(filePath);
     await file.CopyToAsync(stream);
 
-    var imgUrl = $"{request.Scheme}://{request.Host}/images/{fileName}.jpg";
+    var imgUrl = $"{request.Scheme}://{request.Host}{request.Path}/{fileName}.jpg";
 
-    return Results.Ok(imgUrl);
+    return Results.Created(imgUrl, new { Url = imgUrl });
 })
 .WithName("PostImage")
-//.WithOpenApi()
 .DisableAntiforgery();
 
-app.UseStatusCodePagesWithRedirects("/errors/{0}");
-
-app.MapGet("/errors/404", async (HttpContext context) =>
-{
-
-    using HttpClient client = new();
-    try
-    {
-        HttpResponseMessage response = await client.GetAsync("https://http.dog/404.jpg");
-
-        response.EnsureSuccessStatusCode();
-
-        byte[] imageData = await response.Content.ReadAsByteArrayAsync();
-
-        context.Response.ContentType = response.Content.Headers.ContentType.ToString();
-
-        await context.Response.Body.WriteAsync(imageData, 0, imageData.Length);
-    }
-    catch (HttpRequestException)
-    {
-        context.Response.StatusCode = 500;
-        await context.Response.WriteAsync("Dummy text, not good to get error when trying to display 404 error img :)");
-    }
-});
-
 app.Run();
+
