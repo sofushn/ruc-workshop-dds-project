@@ -59,7 +59,7 @@ jobs:
         working-directory: ./src/svc/${{ matrix.service }}
         run: |
           cp ${{ github.workspace }}/package.json .
-          semantic-release -d -t v${{ matrix.service }}-'${version}'
+          semantic-release -t ${{ matrix.service }}-v'${version}'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USERNAME: ${{ github.actor }}
