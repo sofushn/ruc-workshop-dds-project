@@ -13,7 +13,7 @@
       [
         "@semantic-release/exec",
         {
-          "verifyConditionsCmd": "echo ${env.GITHUB_TOKEN} | docker login ghcr.io -u ${env.DOCKER_USERNAME} --password-stdin",
+          "verifyConditionsCmd": "echo ${process.env.GITHUB_TOKEN} | docker login ghcr.io -u ${process.env.DOCKER_USER} --password-stdin",
           "publishCmd": "docker tag sofushn/ruc-workshop-dds-project ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag} && docker push ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag}"
         }
       ]
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "semantic-release": "^24.0.0",
-    "conventional-changelog-conventionalcommits": "^8.0.0"
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "@semantic-release/exec": "^7.0.0"
   }
 }
