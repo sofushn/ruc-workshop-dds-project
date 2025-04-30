@@ -1,0 +1,51 @@
+name: Pull Request Check
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  check_changes:
+    name: Check for changed services in src/svc
+    runs-on: ubuntu-latest
+    outputs:
+      changed_services: ${{ steps.get_changes.outputs.all_modified_files }}
+      has_changes: ${{ steps.get_changes.outputs.any_modified }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get changed module directories
+        id: get_changes
+        uses: tj-actions/changed-files@v46
+        with:
+          path: ./src/svc
+          dir_names: true
+          dir_names_max_depth: 1
+          json: true
+          escape_json: false
+      - name: Print changed services
+        run: |
+          echo "${{ steps.get_changes.outputs.all_modified_files }}"
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: check_changes
+    if: ${{ needs.check_changes.outputs.has_changes == 'true' }}
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
+    strategy:
+      fail-fast: false
+      matrix:
+        service: ${{ fromJson(needs.check_changes.outputs.changed_services) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build docker image
+        working-directory: ./src/svc/${{ matrix.service }}
+        run: docker build -t ghcr.io/sofushn/ruc-workshop-dds-project --label "org.opencontainers.image.source=https://github.com/sofushn/ruc-workshop-dds-project" .
