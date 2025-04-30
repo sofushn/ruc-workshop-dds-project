@@ -54,7 +54,7 @@ jobs:
         with:
           node-version: 'lts/*' # Use the latest Long Term Support version of Node.js
       - name: Install Semantic Release
-        run: npm install -g semantic-release @semantic-release-plus/docker conventional-changelog-conventionalcommits
+        run: npm install -g semantic-release conventional-changelog-conventionalcommits @semantic-release/exec
       - name: Run semantic-release
         working-directory: ./src/svc/${{ matrix.service }}
         run: |

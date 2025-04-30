@@ -49,3 +49,18 @@ jobs:
       - name: Build docker image
         working-directory: ./src/svc/${{ matrix.service }}
         run: docker build -t ghcr.io/sofushn/ruc-workshop-dds-project --label "org.opencontainers.image.source=https://github.com/sofushn/ruc-workshop-dds-project" .
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*' # Use the latest Long Term Support version of Node.js
+      - name: Install Semantic Release
+        run: npm install -g semantic-release conventional-changelog-conventionalcommits @semantic-release/exec
+      - name: Run semantic-release
+        working-directory: ./src/svc/${{ matrix.service }}
+        run: |
+          cp ${{ github.workspace }}/package.json .
+          semantic-release --dry-run -t ${{ matrix.service }}-v'${version}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_USER: ${{ github.actor }}

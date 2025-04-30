@@ -21,8 +21,6 @@
   },
   "dependencies": {
     "semantic-release": "^24.0.0",
-    "conventional-changelog-conventionalcommits": "^8.0.0",
-    "semantic-release-commit-filter": "^1.0.0",
-    "@eclass/semantic-release-docker": "^4.0.0"
+    "conventional-changelog-conventionalcommits": "^8.0.0"
   }
 }
