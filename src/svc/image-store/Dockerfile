@@ -31,4 +31,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 COPY --from=build /app/Images /app/Images
+RUN chmod -R $APP_UID:$APP_GID /app/Images  
 ENTRYPOINT ["dotnet", "ImageStoreAPI.dll"]
