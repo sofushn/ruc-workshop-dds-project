@@ -1,7 +1,5 @@
 FROM postgres:17.4
 
-LABEL org.opencontainers.image.source https://github.com/sofushn/ruc-workshop-dds-project
-
 COPY ./build_image_db.sql /scripts/
 
 COPY ./dockerRun.sh docker-entrypoint-initdb.d/
