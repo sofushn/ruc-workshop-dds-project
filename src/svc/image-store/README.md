@@ -11,7 +11,7 @@ Its purpose is to provide access to the stored images for other services.
 - **📂 Static File Serving:** Serves images from the local `Images` folder.
 - **🔗 Image Listing Endpoint:** Provides a list of all avaible image URLs.
 - **🐶 Custom Error Pages:** Displays custom error page, with dummy picture. Currenly only supports 404, showing dog image from https://http.dog/404.jpg 
-- **📘 Swagger Integration:** Uses standard configuration of Swagger UI for API documentation & testing
+- **📘 Swagger Integration:** Uses standard configuration of Swagger UI for API documentation & testing.
 
 ## API Reference
 
