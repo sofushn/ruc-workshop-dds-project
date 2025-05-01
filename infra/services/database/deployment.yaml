@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:latest
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:database-latest
         env:
         - name: POSTGRES_USER
           value: postgres  # Replace with your desired username

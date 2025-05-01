@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: image-store
-        image: imgstore:dev
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:image-store-latest
         ports:
         - containerPort: 8080
