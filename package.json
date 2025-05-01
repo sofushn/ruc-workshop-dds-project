@@ -14,7 +14,7 @@
         "@semantic-release/exec",
         {
           "verifyConditionsCmd": "echo ${process.env.GITHUB_TOKEN} | docker login ghcr.io -u ${process.env.DOCKER_USER} --password-stdin",
-          "publishCmd": "docker tag sofushn/ruc-workshop-dds-project ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag} && docker push ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag}"
+          "publishCmd": "docker tag ruc-workshop-dds-project ghcr.io/sofushn/ruc-workshop-dds-project:${process.env.SERVICE_NAME}-latest && docker tag ruc-workshop-dds-project ghcr.io/sofushn/ruc-workshop-dds-project:${nextRelease.gitTag} && docker push --all-tags ghcr.io/sofushn/ruc-workshop-dds-project"
         }
       ]
     ]

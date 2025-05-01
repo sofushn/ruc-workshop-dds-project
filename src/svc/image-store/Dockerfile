@@ -16,8 +16,9 @@ RUN dotnet restore "./ImageStoreAPI.csproj"
 COPY . .
 
 COPY Images /app/Images
+RUN chmod 777 /app/Images
+RUN chown -R $APP_UID /app/Images
 
-WORKDIR "/src/."
 RUN dotnet build "./ImageStoreAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
@@ -31,5 +32,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 COPY --from=build /app/Images /app/Images
-RUN chmod -R $APP_UID:$APP_GID /app/Images  
 ENTRYPOINT ["dotnet", "ImageStoreAPI.dll"]

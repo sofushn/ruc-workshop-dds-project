@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build docker image
         working-directory: ./src/svc/${{ matrix.service }}
-        run: docker build -t sofushn/ruc-workshop-dds-project --label "org.opencontainers.image.source=https://github.com/sofushn/ruc-workshop-dds-project" .
+        run: docker build -t ruc-workshop-dds-project --label "org.opencontainers.image.source=https://github.com/sofushn/ruc-workshop-dds-project" .
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -63,3 +63,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_USER: ${{ github.actor }}
+          SERVICE_NAME: ${{ matrix.service }}
