@@ -1,4 +1,4 @@
-let imageHostUrl = "http://localhost:8080/images/";
+let imageHostUrl = "http://localhost:8080/image-api/images/";
 let apiHostUrl = "http://localhost:5165/coordinates/";
 let mapImage = document.getElementById('mapImage');
 mapImage.src = imageHostUrl+"2dmap.jpg";
