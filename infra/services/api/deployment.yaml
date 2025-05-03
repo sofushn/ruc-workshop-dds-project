@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: backend-api:latest
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:api-latest
         ports:
         - containerPort: 8080
         env:

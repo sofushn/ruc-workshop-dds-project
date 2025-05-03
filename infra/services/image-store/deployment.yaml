@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: imgstore-deployment
+  name: image-store
   labels:
-    app: imgstore
+    app: image-store
   namespace: development
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: imgstore
+      app: image-store
   template:
     metadata:
       labels:
-        app: imgstore
+        app: image-store
     spec:
       containers:
-      - name: imgstore
-        image: imgstore:dev
+      - name: image-store
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:image-store-latest
         ports:
         - containerPort: 8080

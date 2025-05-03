@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: website
-        image: website:dev
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:website-latest
         ports:
         - containerPort: 80
