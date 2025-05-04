@@ -17,15 +17,14 @@ RUN dotnet publish "./ImageStoreAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publ
 
 FROM base AS final
 WORKDIR /app
-ARG APP_USER=appuser
-ARG APP_UID=10001
-RUN useradd -u ${APP_UID} ${APP_USER}
 
 COPY --from=publish /app/publish .
 COPY Images /app/Images
 
-RUN chown -R ${APP_USER}:${APP_USER} /app/Images
+USER root
+RUN chmod 777 /app/Images
+RUN chown -R $APP_UID /app/Images
 
-USER ${APP_USER}
+USER $APP_UID
 
 ENTRYPOINT ["dotnet", "ImageStoreAPI.dll"]
