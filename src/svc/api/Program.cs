@@ -27,13 +27,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/map/{mapId}/coordinates", CoordinatesHandler.GetAll);
-app.MapGet("/coordinates/{coordinateId}", CoordinatesHandler.GetById);
-app.MapPost("/coordinates/{coordinateId}", CoordinatesHandler.Create);
-app.MapPut("/coordinates/{coordinateId}", CoordinatesHandler.Update);
-app.MapDelete("/coordinates/{coordinateId}", CoordinatesHandler.Delete);
+RouteGroupBuilder apiGroup = app.MapGroup("/api");
 
-app.MapGet("/map", MapHandler.GetAll);
-app.MapGet("/map/{mapId}", MapHandler.GetById);
+apiGroup.MapGet("coordinates/{coordinateId}", CoordinatesHandler.GetById);
+apiGroup.MapPost("coordinates/{coordinateId}", CoordinatesHandler.Create);
+apiGroup.MapDelete("coordinates/{coordinateId}", CoordinatesHandler.Delete);
+apiGroup.MapPut("coordinates/{coordinateId}", CoordinatesHandler.Update);
+
+apiGroup.MapGet("map/{mapId}/coordinates", CoordinatesHandler.GetAll);
+apiGroup.MapGet("map", MapHandler.GetAll);
+apiGroup.MapGet("map/{mapId}", MapHandler.GetById);
 
 app.Run();
