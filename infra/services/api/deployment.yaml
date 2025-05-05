@@ -19,5 +19,7 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: ASPNETCORE_ENVIROMENT
+        - name: ASPNETCORE_ENVIRONMENT
           value: "development"
+        - name: ConnectionStrings__PostgresDatabase
+          value: "Host=postgres.development.svc;Port=5432;Database=postgres-db;Username=postgres;Password=postgres"
