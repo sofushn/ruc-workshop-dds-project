@@ -19,6 +19,11 @@ mapBoundaries = {
 
 function updateMap(data) {
     data.forEach((location, index) => {
+        if (location.longitude < mapBoundaries.southWest.lng || location.longitude > mapBoundaries.northEast.lng ||
+            location.latitude < mapBoundaries.southWest.lat || location.latitude > mapBoundaries.northEast.lat) {
+            console.error("Location is out of map boundaries:", location);
+            return;
+        }
         let button = document.createElement('button');
         button.innerHTML = index + 1;
         button.style.position = 'absolute';
@@ -52,13 +57,14 @@ function postImageData()
     let lng = document.getElementById("longitude").value;
     let image_id = document.getElementById("image_id").value;
     let mapid = document.getElementById("coordinateMapId").value;
-    let fetchUrl = apiHostUrl +"/coordinates/3";
+    let fetchUrl = apiHostUrl +"coordinates/1";
     fetch(fetchUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
+            id: 0,
             imageId: image_id,
             latitude: parseFloat(lat),
             longitude: parseFloat(lng),
