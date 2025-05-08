@@ -29,10 +29,10 @@ public class MetadataContext : DbContext
 
         modelBuilder.Entity<Map>().ToTable("map");
         modelBuilder.Entity<Map>().Property(x => x.Id).HasColumnName("id");
-        modelBuilder.Entity<Map>().Property(x => x.NELatitude).HasColumnName("NE_latitude");
-        modelBuilder.Entity<Map>().Property(x => x.NELongitude).HasColumnName("NE_longitude");
-        modelBuilder.Entity<Map>().Property(x => x.SWLatitude).HasColumnName("SW_latitude");
-        modelBuilder.Entity<Map>().Property(x => x.SWLongitude).HasColumnName("SW_longitude");
+        modelBuilder.Entity<Map>().Property(x => x.NELatitude).HasColumnName("ne_latitude");
+        modelBuilder.Entity<Map>().Property(x => x.NELongitude).HasColumnName("ne_longitude");
+        modelBuilder.Entity<Map>().Property(x => x.SWLatitude).HasColumnName("sw_latitude");
+        modelBuilder.Entity<Map>().Property(x => x.SWLongitude).HasColumnName("sw_longitude");
         modelBuilder.Entity<Map>().Property(x => x.ImageId).HasColumnName("image_id");
 
     }
