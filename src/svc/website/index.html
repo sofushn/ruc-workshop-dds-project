@@ -19,10 +19,14 @@
         <input type="text" id="longitude" value="0"><br>
         <label for="image_id">Image Id:</label>
         <input type="text" id="image_id" value="0"><br>
+        <label for="coordinateMapId">Map Id:</label>
+        <input type="text" id="coordinateMapId" value="0"><br>
         <button id="postButton" onclick="postImageData()">Post</button>
-        <button id="fetchButton" onclick="getImageData()">Get</button>
-        <button id="placeholderDataButton" onclick="postPlaceholderData()">Post Placeholder Data</button>
-
+    </div>
+    <div id="DataInput2" style="position: fixed; bottom: 0; right: 0; z-index: 20; background-color: white; padding: 10px;">
+        <label for="mapId">Map ID:</label>
+        <input type="text" id="mapId" value="1"><br>
+        <button id="fetchButton2" onclick="getMap()">Get</button>
 <script src="src/index.js"></script>
 </body>
 </html>
