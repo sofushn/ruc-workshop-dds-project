@@ -53,35 +53,47 @@ function updateMap(data) {
 
 function postImageData()
 {
-    let lat = document.getElementById("latitude").value;
-    let lng = document.getElementById("longitude").value;
     let image_id = document.getElementById("image_id").value;
     let mapid = document.getElementById("coordinateMapId").value;
+    let imageFile = document.getElementById("imageFile").files[0];
     let fetchUrl = apiHostUrl +"coordinates/1";
-    fetch(fetchUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: 0,
-            imageId: image_id,
-            latitude: parseFloat(lat),
-            longitude: parseFloat(lng),
-            mapId: mapid
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+
+    EXIF.getData(imageFile, function() {
+        let lat = EXIF.getTag(this, "GPSLatitude");
+        let lng = EXIF.getTag(this, "GPSLongitude");
+        if (lat && lng) {
+            lat = lat[0] + (lat[1] / 60) + (lat[2] / 3600);
+            lng = lng[0] + (lng[1] / 60) + (lng[2] / 3600);
+
+            fetch(fetchUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: 0,
+                    imageId: image_id,
+                    latitude: lat,
+                    longitude: lng,
+                    mapId: mapid
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        } else {
+            console.error("No GPS data found in image.");
         }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch(error => {
-        console.error('Error:', error);
     });
 }
 function getMap() {
