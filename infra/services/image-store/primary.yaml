@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: image-store-primary
+  namespace: development
+  labels:
+    app: image-store
+    image-store: primary
+spec:
+  containers:
+  - name: image-store
+    image: ghcr.io/sofushn/ruc-workshop-dds-project:image-store-latest
+    ports:
+    - containerPort: 8080
+    env:
+    - name: ReplicationOptions__Enabled
+      value: "true"
+    - name: ReplicationOptions__IsPrimary
+      value: "true"
+    - name: ReplicationOptions__ReplicaUrls__0
+      value: "http://image-store-replica-0.image-store-headless:8080"
+    - name: ReplicationOptions__ReplicaUrls__1
+      value: "http://image-store-replica-1.image-store-headless:8080"
+    - name: ReplicationOptions__ReplicaUrls__2
+      value: "http://image-store-replica-2.image-store-headless:8080"
+    volumeMounts:
+    - name: image-store-data
+      mountPath: /images
+  volumes:
+  - name: image-store-data
+    emptyDir: {}
