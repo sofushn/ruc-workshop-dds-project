@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ImageStoreAPI;
 
-public class ApiHandler {
+public static class ApiHandler {
     public static IResult GetAll([FromServices] IWebHostEnvironment environment, HttpRequest request) {
-        string imagesPath = Path.Combine(environment.ContentRootPath, "Images");
+        string imagesPath = Utils.GetImageFolderPath(environment);
 
         IEnumerable<string> files = Directory.EnumerateFiles(imagesPath)
             .Select(Path.GetFileName)
@@ -21,11 +21,11 @@ public class ApiHandler {
         if (!Path.HasExtension(fileName))
             fileName += ".jpg";
         
-        string filePath = Path.Combine(environment.ContentRootPath, "Images", fileName);
+        string filePath = Path.Combine(Utils.GetImageFolderPath(environment), fileName);
 
         return File.Exists(filePath)
             ? Results.File(filePath, "image/jpeg")
-            : Results.NotFound("Image not found.");
+            : Results.NotFound();
     }
 
     public static IResult Post([FromServices] IWebHostEnvironment environment, [Required] IFormFile file, HttpRequest request) {
