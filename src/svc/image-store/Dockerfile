@@ -16,14 +16,12 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./ImageStoreAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
-WORKDIR /app
-
 COPY --from=publish /app/publish .
-COPY Images /app/Images
+COPY Images /images
 
 USER root
-RUN chmod 777 /app/Images
-RUN chown -R $APP_UID /app/Images
+RUN chmod 777 /images
+RUN chown -R $APP_UID /images
 
 USER $APP_UID
 

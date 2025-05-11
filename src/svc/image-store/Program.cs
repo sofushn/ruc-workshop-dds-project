@@ -5,6 +5,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
+
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<SyncBackgroundService>();
+
+builder.Services.AddScoped<ReplicationService>();
+
+builder.Services.AddOptions<ReplicationOptions>()
+    .Configure<IConfiguration>((options, configuration) => {
+        configuration.Bind("ReplicationOptions", options);
+    })
+    .ValidateDataAnnotations();
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -37,5 +49,19 @@ image.MapPost("images", ApiHandler.Post)
     .Accepts<IFormFile>("multipart/form-data")
     .Produces(StatusCodes.Status201Created)
     .Produces(StatusCodes.Status400BadRequest);
+
+bool isPrimary = app.Configuration.GetValue<bool>("ReplicationOptions:IsPrimary");
+if (app.Environment.IsDevelopment() || !isPrimary) {
+    RouteGroupBuilder sync = app.MapGroup("/sync");
+    sync.MapPost("request", SyncHandler.Request)
+        .DisableAntiforgery()
+        .WithName("SyncRequest")
+        .Accepts<SyncRequest>("multipart/form-data")
+        .Produces(StatusCodes.Status200OK);
+
+    sync.MapPost("check", SyncHandler.Check)
+        .WithName("SyncCheck")
+        .Produces<string[]>(StatusCodes.Status200OK);   
+}
 
 app.Run();

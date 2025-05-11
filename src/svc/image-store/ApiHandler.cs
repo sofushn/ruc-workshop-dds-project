@@ -28,12 +28,16 @@ public static class ApiHandler {
             : Results.NotFound();
     }
 
-    public static IResult Post([FromServices] IWebHostEnvironment environment, [Required] IFormFile file, HttpRequest request) {
+    public static IResult Post(
+        [FromServices] IWebHostEnvironment environment, 
+        [FromServices] ReplicationService replicationService, 
+        [Required] IFormFile file, 
+        HttpRequest request) 
+    {
         Guid fileName = Guid.NewGuid();
-        string filePath = Path.Combine(environment.ContentRootPath, "Images", $"{fileName}.jpg");
-        
-        using var stream = File.OpenWrite(filePath);
-        file.CopyTo(stream);
+        Utils.WriteToDisk(environment, fileName.ToString(), file);
+
+        replicationService.SyncFile(fileName, file);
 
         string imgUrl = $"{request.GetEncodedUrl()}/{fileName}.jpg";
 
