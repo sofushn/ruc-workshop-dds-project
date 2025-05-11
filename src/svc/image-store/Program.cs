@@ -43,14 +43,15 @@ image.MapGet("images/{fileName}", ApiHandler.Get)
     .Produces(StatusCodes.Status200OK)
     .Produces(StatusCodes.Status404NotFound);
 
+bool isPrimary = app.Configuration.GetValue<bool>("ReplicationOptions:IsPrimary");
+if (app.Environment.IsDevelopment() || isPrimary) {
 image.MapPost("images", ApiHandler.Post)
     .DisableAntiforgery() // Disable CSRF protection for this endpoint
     .WithName("PostImage")
     .Accepts<IFormFile>("multipart/form-data")
     .Produces(StatusCodes.Status201Created)
     .Produces(StatusCodes.Status400BadRequest);
-
-bool isPrimary = app.Configuration.GetValue<bool>("ReplicationOptions:IsPrimary");
+}
 if (app.Environment.IsDevelopment() || !isPrimary) {
     RouteGroupBuilder sync = app.MapGroup("/sync");
     sync.MapPost("request", SyncHandler.Request)
