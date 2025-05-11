@@ -4,8 +4,6 @@ namespace ImageStoreAPI;
 
 public class SyncBackgroundService : BackgroundService
 {
-    private const int _syncIntervalSeconds = 5;
-
     private readonly ILogger<SyncBackgroundService> _logger;
     private readonly string _imagesDirectory;
     private readonly IHttpClientFactory _httpClientFactory;
@@ -35,7 +33,7 @@ public class SyncBackgroundService : BackgroundService
 
         _logger.LogInformation("Sync service running in the background.");
 
-        using PeriodicTimer timer = new(TimeSpan.FromSeconds(_syncIntervalSeconds));
+        using PeriodicTimer timer = new(TimeSpan.FromSeconds(_replicationOptions.SyncIntervalSeconds));
         try {
             while (await timer.WaitForNextTickAsync(stoppingToken)) {
                 IEnumerable<string> ids = Directory.EnumerateFiles(_imagesDirectory)
