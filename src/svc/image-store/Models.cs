@@ -13,13 +13,10 @@ public class SyncRequest {
     public required string Id { get; set; }
     public required IFormFile File { get; set; }
 
-    public static ValueTask<SyncRequest?> BindAsync(HttpContext httpContext, ParameterInfo parameter) {
-        // return the CreateTicketDto
-        return ValueTask.FromResult<SyncRequest?>(
-            new SyncRequest() {
+    public static ValueTask<SyncRequest?> BindAsync(HttpContext httpContext, ParameterInfo parameter) 
+        => ValueTask.FromResult<SyncRequest?>(new() {
                 Id = httpContext.Request.Form["id"],
                 File = httpContext.Request.Form.Files[0]
             }
         );
-    }
 }

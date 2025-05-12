@@ -35,9 +35,9 @@ public static class ApiHandler {
         HttpRequest request) 
     {
         Guid fileName = Guid.NewGuid();
-        Utils.WriteToTemp(environment, fileName.ToString(), file);
+        await Utils.WriteToTempAsync(environment, fileName.ToString(), file);
 
-        await replicationService.SyncFile(fileName, file);
+        await replicationService.SyncFileAsync(fileName, fileName.ToString());
 
         Utils.MoveFileToPermenentStorage(environment, fileName.ToString());
 

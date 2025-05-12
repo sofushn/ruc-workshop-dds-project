@@ -73,16 +73,19 @@ public class SyncBackgroundService : BackgroundService
         foreach (string id in missingIds) {
             string filePath = Path.Combine(_imagesDirectory, $"{id}.jpg");
 
-            using var stream = File.OpenRead(filePath);
-            using var content = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(stream);
-            content.Add(fileContent, "file", $"{id}.jpg");
-            content.Add(new StringContent(id), "id");
+            using FileStream stream = File.OpenRead(filePath);
+            using StreamContent fileContent = new (stream);
+
+            using MultipartFormDataContent content = new() {
+                { fileContent, "file", $"{id}.jpg" },
+                { new StringContent(id), "id" }
+            };
 
             HttpResponseMessage syncResponse = await client.PostAsync($"{url}/sync/request", content);
             if (!syncResponse.IsSuccessStatusCode) 
                 _logger.LogWarning($"Failed to sync file ({id}) to replica: {url}");
         }
         _syncInProgress.AddOrUpdate(url, false, (key, value) => false);
+        _logger.LogInformation($"Sync completed for {url}");
     }
 }

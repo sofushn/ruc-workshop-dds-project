@@ -5,40 +5,46 @@ namespace ImageStoreAPI;
 public class ReplicationService {
     private ILogger<ReplicationService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IWebHostEnvironment _environment;
     private readonly IOptionsSnapshot<ReplicationOptions> _options;
 
     public ReplicationService(
         IOptionsSnapshot<ReplicationOptions> options, 
         ILogger<ReplicationService> logger, 
-        IHttpClientFactory httpClientFactory)
+        IHttpClientFactory httpClientFactory,
+        IWebHostEnvironment environment)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
+        _environment = environment;
         _options = options;
     }
 
-    public async Task SyncFile(Guid id, IFormFile file) {
+    public async Task SyncFileAsync(Guid id, string fileId) {
         if (!_options.Value.IsPrimary || !_options.Value.Enabled)
             return;
         
         await Parallel.ForEachAsync(_options.Value.ReplicaUrls, async (url, cancellationToken) => {
             try {
-                await SyncFileToReplica(url, id, file);
+                await SyncFileToReplicaAsync(url, fileId);
             } catch (Exception ex) {
                 _logger.LogWarning(ex, $"Failed to sync file to replica: {url}");
             }
         });
     }
 
-    private async Task SyncFileToReplica(string url, Guid id, IFormFile file) {
-        using var client = _httpClientFactory.CreateClient();
-        using var content = new MultipartFormDataContent();
-        using var stream = file.OpenReadStream();
-        using var fileContent = new StreamContent(stream);
+    private async Task SyncFileToReplicaAsync(string url, string fileId) {
+        string filePath = Path.Combine(Utils.GetTempFolderPath(_environment), $"{fileId}.jpg");
         
-        content.Add(fileContent, "file", file.FileName);
-        content.Add(new StringContent(id.ToString()), "id");
+        using FileStream stream = File.OpenRead(filePath);
+        using StreamContent fileContent = new(stream);
         
+        using MultipartFormDataContent content = new() {
+            { fileContent, "file", $"{fileId}.jpg" },
+            { new StringContent(fileId), "id" }
+        };
+        
+        using HttpClient client = _httpClientFactory.CreateClient();
         HttpResponseMessage response = await client.PostAsync($"{url}/sync/request", content);
 
         if (!response.IsSuccessStatusCode)
