@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Options;
 
 namespace ImageStoreAPI;
@@ -9,6 +10,8 @@ public class SyncBackgroundService : BackgroundService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ReplicationOptions _replicationOptions;
 
+    private static Dictionary<string, BlockingCollection<string>> _filesBeingSynced;
+
     public SyncBackgroundService(
         ILogger<SyncBackgroundService> logger,
         IWebHostEnvironment environment,
@@ -17,6 +20,12 @@ public class SyncBackgroundService : BackgroundService
     {
         _logger = logger;
         _imagesDirectory = Utils.GetImageFolderPath(environment);
+
+        _filesBeingSynced = new Dictionary<string, BlockingCollection<string>>();
+        foreach (string url in replicationOptions.CurrentValue.ReplicaUrls) {
+            _filesBeingSynced.TryAdd(url, []);
+        }
+
         _httpClientFactory = httpClientFactory;
         _replicationOptions = replicationOptions.CurrentValue;
     }
@@ -58,21 +67,32 @@ public class SyncBackgroundService : BackgroundService
         List<string> missingIds = await response.Content.ReadFromJsonAsync<List<string>>() ?? [];
         if(!missingIds.Any())
             return;
+        
+        foreach (string id in missingIds) {
+            if (!_filesBeingSynced[url].Contains(id))
+                _filesBeingSynced[url].Add(id);
+        }
 
         _logger.LogInformation($"Syncing {missingIds.Count} files to replica: {url}");
 
-        foreach (string id in missingIds) {
-            string filePath = Path.Combine(_imagesDirectory, $"{id}.jpg");
+        for (int i = 0; i < missingIds.Count; i++) {
+            string id = _filesBeingSynced[url].Take();
+            try {
+                string filePath = Path.Combine(_imagesDirectory, $"{id}.jpg");
 
-            using var stream = File.OpenRead(filePath);
-            using var content = new MultipartFormDataContent();
-            using var fileContent = new StreamContent(stream);
-            content.Add(fileContent, "file", $"{id}.jpg");
-            content.Add(new StringContent(id), "id");
+                using var stream = File.OpenRead(filePath);
+                using var content = new MultipartFormDataContent();
+                using var fileContent = new StreamContent(stream);
+                content.Add(fileContent, "file", $"{id}.jpg");
+                content.Add(new StringContent(id), "id");
 
-            HttpResponseMessage syncResponse = await client.PostAsync($"{url}/sync/request", content);
-            if (!syncResponse.IsSuccessStatusCode) 
-                _logger.LogWarning($"Failed to sync file ({id}) to replica: {url}");
+                HttpResponseMessage syncResponse = await client.PostAsync($"{url}/sync/request", content);
+                if (!syncResponse.IsSuccessStatusCode) 
+                    _logger.LogWarning($"Failed to sync file ({id}) to replica: {url}");
+            } catch {
+                _filesBeingSynced[url].Add(id);
+                throw;
+            }
         }
     }
 }
