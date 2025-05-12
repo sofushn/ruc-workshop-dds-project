@@ -17,20 +17,20 @@ public class ReplicationService {
         _options = options;
     }
 
-    public void SyncFile(Guid id, IFormFile file) {
+    public async Task SyncFile(Guid id, IFormFile file) {
         if (!_options.Value.IsPrimary || !_options.Value.Enabled)
             return;
         
-        Parallel.ForEach(_options.Value.ReplicaUrls, url => {
+        await Parallel.ForEachAsync(_options.Value.ReplicaUrls, async (url, cancellationToken) => {
             try {
-                SyncFileToReplica(url, id, file);
+                await SyncFileToReplica(url, id, file);
             } catch (Exception ex) {
                 _logger.LogWarning(ex, $"Failed to sync file to replica: {url}");
             }
         });
     }
 
-    private void SyncFileToReplica(string url, Guid id, IFormFile file) {
+    private async Task SyncFileToReplica(string url, Guid id, IFormFile file) {
         using var client = _httpClientFactory.CreateClient();
         using var content = new MultipartFormDataContent();
         using var stream = file.OpenReadStream();
@@ -39,7 +39,7 @@ public class ReplicationService {
         content.Add(fileContent, "file", file.FileName);
         content.Add(new StringContent(id.ToString()), "id");
         
-        HttpResponseMessage response = client.PostAsync($"${url}/sync/request", content).Result;
+        HttpResponseMessage response = await client.PostAsync($"${url}/sync/request", content);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to sync file to replica: {url}");

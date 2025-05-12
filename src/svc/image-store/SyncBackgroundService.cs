@@ -44,7 +44,7 @@ public class SyncBackgroundService : BackgroundService
             while (await timer.WaitForNextTickAsync(stoppingToken)) {
                 IEnumerable<string> ids = Directory.EnumerateFiles(_imagesDirectory)
                     .Select(Path.GetFileNameWithoutExtension)!;
-                Parallel.ForEach(_replicationOptions.CurrentValue.ReplicaUrls, async url => await Sync(url, ids));
+                await Parallel.ForEachAsync(_replicationOptions.CurrentValue.ReplicaUrls, async (url, cancellationToken) => await Sync(url, ids));
             }
         } catch (OperationCanceledException) {
             _logger.LogInformation("Timed Hosted Service is stopping.");
@@ -69,7 +69,6 @@ public class SyncBackgroundService : BackgroundService
         List<string> missingIds = await response.Content.ReadFromJsonAsync<List<string>>() ?? [];
         if(!missingIds.Any())
             return;
-        
 
         _logger.LogInformation($"Syncing {missingIds.Count} files to replica: {url}");
 
