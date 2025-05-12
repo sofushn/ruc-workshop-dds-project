@@ -39,7 +39,7 @@ public class ReplicationService {
         content.Add(fileContent, "file", file.FileName);
         content.Add(new StringContent(id.ToString()), "id");
         
-        HttpResponseMessage response = await client.PostAsync($"${url}/sync/request", content);
+        HttpResponseMessage response = await client.PostAsync($"{url}/sync/request", content);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to sync file to replica: {url}");
