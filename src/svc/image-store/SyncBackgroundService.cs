@@ -20,8 +20,6 @@ public class SyncBackgroundService : BackgroundService
     {
         _logger = logger;
         _imagesDirectory = Utils.GetImageFolderPath(environment);
-
-
         _httpClientFactory = httpClientFactory;
         _replicationOptions = replicationOptions;
     }
