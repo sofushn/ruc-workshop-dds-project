@@ -20,6 +20,10 @@ COPY --from=publish /app/publish .
 COPY Images /images
 
 USER root
+RUN mkdir /temp
+RUN chmod 777 /temp
+RUN chown -R $APP_UID /temp
+
 RUN chmod 777 /images
 RUN chown -R $APP_UID /images
 
