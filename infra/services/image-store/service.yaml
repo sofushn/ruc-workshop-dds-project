@@ -7,5 +7,31 @@ spec:
   selector:
     app: image-store
   ports:
-  - port: 80
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-store-primary
+  namespace: development
+spec:
+  selector:
+    app: image-store
+    image-store: primary
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: image-store-headless
+  namespace: development
+spec:
+  clusterIP: None
+  selector:
+    app: image-store
+  ports:
+  - port: 8080
     targetPort: 8080

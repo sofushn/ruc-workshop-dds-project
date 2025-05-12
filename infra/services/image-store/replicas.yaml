@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: image-store-replica
+  namespace: development
+spec:
+  serviceName: image-store-headless
+  replicas: 3
+  selector:
+    matchLabels:
+      app: image-store
+      image-store: replica
+  template:
+    metadata:
+      labels:
+        app: image-store
+        image-store: replica
+    spec:
+      containers:
+      - name: image-store
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:image-store-latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ReplicationOptions__Enabled
+          value: "true"
+        volumeMounts:
+        - name: image-store-data
+          mountPath: /images
+      volumes:
+      - name: image-store-data
+        emptyDir: {}
