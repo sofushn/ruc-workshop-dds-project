@@ -10,7 +10,7 @@ public class ReplicationService {
     public ReplicationService(
         IOptionsSnapshot<ReplicationOptions> options, 
         ILogger<ReplicationService> logger, 
-        IHttpClientFactory httpClientFactory) 
+        IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
