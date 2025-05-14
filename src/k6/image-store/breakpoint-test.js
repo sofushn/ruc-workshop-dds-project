@@ -1,6 +1,6 @@
 import { check, group } from "k6";
 import http from "k6/http";
-
+import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils";
 const fileData = open("Trollface.jpg", "b");
 
 export const options = {
@@ -28,6 +28,8 @@ export default function () {
 
         check(response, {
             "status is 200": (r) => r.status === 200,
+            "response time < 800ms": (r) => r.timings.duration < 800, //Same as http_req_duration, but for this specific request
+            "response is a list of URLs": (r) => isResponseUrlList(r),
         });
     });
 
@@ -35,6 +37,8 @@ export default function () {
         const response = http.get("http://localhost:8080/image-api/images/353450e4-ed02-46f9-9ea7-f3ac18d938b5.jpg");
         check(response, {
             "status is 200": (r) => r.status === 200,
+            "response time < 800ms": (r) => r.timings.duration < 800,
+            "response is an image": (r) => isResponseImage(r),
         });
     });
 
@@ -47,6 +51,7 @@ export default function () {
         const response = http.post("http://localhost:5000/image-api/images", data);
         check(response, {
             "status is 201": (r) => r.status === 201,
+            "response time < 1000ms": (r) => r.timings.duration < 1000,
         });
    
     });
