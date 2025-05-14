@@ -1,6 +1,6 @@
 import { check, group } from "k6";
 import http from "k6/http";
-import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils";
+import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils.js";
 const fileData = open("Trollface.jpg", "b");
 
 export const options = {
