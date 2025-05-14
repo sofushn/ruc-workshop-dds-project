@@ -5,12 +5,12 @@ import exec from "k6/execution";
 import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils.js";
 
 const fileData = open("Trollface.jpg", "b");
-const imageId = "5b288f64-4678-4dd4-99fa-875662303c1c.jpg";
+const imageId = "e51d3639-b625-43c5-b122-15f39c0cb868.jpg";
 
 export const options = {
     executor: "ramping-arrival-rate", 
     stages: [
-        { duration: "2h", target: 10000 },
+        { duration: "30m", target: 10000 },
     ],
     gracefulStop: "1m",
 
@@ -49,7 +49,7 @@ export default function () {
     });
 
     if (iterationCount % 10000 === 0) {
-        
+
     group("PostImg", () => {
         const data = {
             file: http.file(fileData, "Trollface.jpg"),
