@@ -5,6 +5,7 @@ import exec from "k6/execution";
 import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils.js";
 
 const fileData = open("Trollface.jpg", "b");
+const imageId = "5b288f64-4678-4dd4-99fa-875662303c1c.jpg";
 
 export const options = {
     executor: "ramping-arrival-rate", 
@@ -39,7 +40,7 @@ export default function () {
     });
 
     group("GetImageById", () => {
-        const response = http.get("http://localhost:8080/image-api/images/5b288f64-4678-4dd4-99fa-875662303c1c.jpg");
+        const response = http.get(`http://localhost:8080/image-api/images/`+{imageId});
         check(response, {
             "status is 200": (r) => isStatusCode(r, 200),
             "response time < 800ms": (r) => r.timings.duration < 800,
@@ -50,7 +51,7 @@ export default function () {
     if (iterationCount % 10000 === 0) {
     group("PostImg", () => {
         const data = {
-            file: http.file(fileData, "Trollface.jpg"),
+            file: http.file(fileData, "file.jpg"),
         };
 
         const response = http.post("http://localhost:5000/image-api/images", data);
