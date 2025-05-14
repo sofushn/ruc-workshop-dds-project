@@ -2,7 +2,7 @@ import { check, group, sleep } from "k6";
 import http from "k6/http";
 import exec from "k6/execution";
 
-import { isStatusCode, isResponseUrlList, isResponseImage } from "./helpers/checkUtils.js";
+import { isStatusCode, isResponseUrlList, isResponseImage } from "../helpers/checkUtils.js";
 
 const fileData = open("Trollface.jpg", "b");
 const imageId = "e51d3639-b625-43c5-b122-15f39c0cb868.jpg";
