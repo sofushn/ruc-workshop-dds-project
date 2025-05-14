@@ -14,9 +14,9 @@ export function isResponseUrlList(response){
 }
 
 export function isResponseImage(response) {
-    const contentType = response.headers["Content-Type"] || response.headers["content-type"];
-    const contentLength = response.headers["Content-Length"] || response.headers["content-length"];
-
+    const contentType = response.headers["Content-Type"];
+    const contentLength = response.headers["Content-Length"];
+    
     return (
         contentType &&
         contentType.startsWith("image/") &&

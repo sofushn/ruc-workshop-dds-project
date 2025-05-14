@@ -40,7 +40,7 @@ export default function () {
     });
 
     group("GetImageById", () => {
-        const response = http.get(`http://localhost:8080/image-api/images/`+{imageId});
+        const response = http.get(`http://localhost:8080/image-api/images/${imageId}`);
         check(response, {
             "status is 200": (r) => isStatusCode(r, 200),
             "response time < 800ms": (r) => r.timings.duration < 800,
@@ -49,9 +49,10 @@ export default function () {
     });
 
     if (iterationCount % 10000 === 0) {
+        
     group("PostImg", () => {
         const data = {
-            file: http.file(fileData, "file.jpg"),
+            file: http.file(fileData, "Trollface.jpg"),
         };
 
         const response = http.post("http://localhost:5000/image-api/images", data);
