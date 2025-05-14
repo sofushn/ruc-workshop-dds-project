@@ -8,14 +8,18 @@ const fileData = open("Trollface.jpg", "b");
 const imageId = "e51d3639-b625-43c5-b122-15f39c0cb868.jpg";
 
 export const options = {
-    stages: [
-        { duration: "2m", target: 1000 }, 
-        { duration: "5m", target: 1000 }, 
-        { duration: "2m", target: 0 },
-    ],
-
-    gracefulStop: "1m",
-
+    scenarios: {
+        stress_test: {
+        executor: "ramping-arrival-rate", 
+        preAllocatedVUs: 50,
+        maxVUs: 10000,
+        stages: [
+            { duration: "2m", target: 500 }, 
+            { duration: "5m", target: 500 }, 
+            { duration: "2m", target: 0 },
+        ],
+    },
+    },
     thresholds: {
         "http_req_duration": [
             { threshold: "p(95)<800", abortOnFail: true, delayAbortEval: "20s" },
@@ -42,8 +46,6 @@ export default function () {
         });
     });
 
-    sleep(Math.random() * 9 + 1);
-
     group("GetImageById", () => {
         const response = http.get(`http://localhost:8080/image-api/images/${imageId}`);
         check(response, {
@@ -52,8 +54,6 @@ export default function () {
             "response is an image": (r) => isResponseImage(r),
         });
     });
-
-    sleep(Math.random() * 9 + 1);
 
     if (iterationCount % 10000 === 0) {
         

@@ -8,12 +8,16 @@ const fileData = open("Trollface.jpg", "b");
 const imageId = "e51d3639-b625-43c5-b122-15f39c0cb868.jpg";
 
 export const options = {
-    executor: "ramping-arrival-rate", 
-    stages: [
-        { duration: "30m", target: 10000 },
-    ],
-    gracefulStop: "1m",
-
+    scenarios: {
+        breakpoint_test: {
+        executor: "ramping-arrival-rate", 
+        preAllocatedVUs: 50,
+        maxVUs: 10000,
+        stages: [
+            { duration: "30m", target: 10000 },
+        ],
+    },
+    },
     thresholds: {
         "http_req_duration": [
             { threshold: "p(95)<800", abortOnFail: true, delayAbortEval: "20s" },
