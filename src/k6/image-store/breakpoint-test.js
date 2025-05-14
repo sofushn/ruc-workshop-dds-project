@@ -1,7 +1,6 @@
 import { check, group } from "k6";
 import http from "k6/http";
 
-let getCount = 0;
 const fileData = open("Trollface.jpg", "b");
 
 export const options = {
@@ -13,34 +12,33 @@ export const options = {
 
     thresholds: {
         "http_req_duration": [
-            { threshold: "p(90)<500", abortOnFail: true, delayAbortVal: "20s" },
             { threshold: "p(95)<800", abortOnFail: true, delayAbortEval: "20s" },
+            { threshold: "avg < 500", abortOnFail: true, delayAbortVal: "20s" }
         ], 
         "http_req_failed": [{ threshold: "rate<0.01", abortOnFail: true, delayAbortVal: "20s" }],
-        // "checks": ["rate>0.90"], 
+
+        "checks": ["rate>0.95"], 
     },
 
 };
 
 export default function () {
-    group("/images", () => {
+    group("GetAllImages", () => {
         const response = http.get("http://localhost:8080/image-api/images");
 
         check(response, {
             "status is 200": (r) => r.status === 200,
         });
-        getCount++;
     });
 
-    group("/3.jpg", () => {
-        const response = http.get("http://localhost:8080/image-api/images/637d41bf-24e1-4ba5-87ef-33007f188316.jpg");
+    group("GetImageById", () => {
+        const response = http.get("http://localhost:8080/image-api/images/353450e4-ed02-46f9-9ea7-f3ac18d938b5.jpg");
         check(response, {
             "status is 200": (r) => r.status === 200,
         });
-        getCount++;
     });
 
-    if (getCount > 1000) {
+    if (__ITER % 10000 === 0) {
     group("PostImg", () => {
         const data = {
             file: http.file(fileData, "Trollface.jpg"),
@@ -50,7 +48,7 @@ export default function () {
         check(response, {
             "status is 201": (r) => r.status === 201,
         });
-        getCount = 0;
+   
     });
     };
 }
