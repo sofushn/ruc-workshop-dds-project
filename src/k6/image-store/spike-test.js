@@ -1,4 +1,4 @@
-import { check, group, sleep } from "k6";
+import { check, group } from "k6";
 import http from "k6/http";
 import exec from "k6/execution";
 
@@ -45,8 +45,6 @@ export default function () {
         });
     });
 
-    sleep(Math.random() * 9 + 1);
-
     group("GetImageById", () => {
         const response = http.get(`http://localhost:8080/image-api/images/${imageId}`);
         check(response, {
@@ -55,8 +53,6 @@ export default function () {
             "response is an image": (r) => isResponseImage(r),
         });
     });
-
-    sleep(Math.random() * 9 + 1);
 
     if (iterationCount % 10000 === 0) {
         
