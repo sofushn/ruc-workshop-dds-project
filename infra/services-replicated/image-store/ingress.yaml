@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: image-store
+  namespace: development
+
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /image-api
+            pathType: Prefix
+            backend:
+              service:
+                name:  image-store
+                port:
+                  number: 8080
