@@ -15,6 +15,8 @@ To simplify testing of scaling configurations we deploy all services in a kubern
 2. Run `k3d cluster create --config k3dcluster.yaml` (Make sure that docker is running in the background)
 3. Deploy each k8s configuration resource individually with `kubectl apply -f <path to .yaml file>`
 
+Optional: when creating cluster add `--volume $PWD/cluster-configs/loadbalancer.yaml:/var/lib/rancher/k3s/server/manifests/traefik-config.yaml@server:*` to scale ingress loadblancer based on configuration in `loadbalancer.yaml` file.
+
 ### Remote VM
 
 Comming soon...
