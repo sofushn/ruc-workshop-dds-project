@@ -43,6 +43,6 @@ public static class ApiHandler {
 
         string imgUrl = $"{request.GetEncodedUrl()}/{fileName}.jpg";
 
-        return Results.Created(imgUrl, new { Url = imgUrl });
+        return Results.Created(imgUrl, new { url = imgUrl, id = fileName });
     }
 }
