@@ -24,7 +24,7 @@ create table waypoint (
 
 
 INSERT INTO map (ne_longitude, ne_latitude, sw_longitude, sw_latitude, image_id) VALUES
-(12.144353,55.655294,12.134139,55.651107,'test1');
+(12.144353,55.655294,12.134139,55.651107,'2dmap');
 
 INSERT INTO waypoint (longitude,latitude,height,image_id,map_id) VALUES 
  (12.140358,55.653372,70.08,'1',1);
