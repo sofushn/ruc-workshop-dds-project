@@ -1,7 +1,3 @@
-FROM postgres:17.4
+FROM bitnami/postgresql-repmgr:17.5.0
 
-COPY ./build_image_db.sql /scripts/
-
-COPY ./dockerRun.sh docker-entrypoint-initdb.d/
-
-
+COPY ./build_image_db.sql /docker-entrypoint-initdb.d/

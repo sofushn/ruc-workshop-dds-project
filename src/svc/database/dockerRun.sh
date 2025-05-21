@@ -1,1 +1,0 @@
-psql -U $POSTGRES_USER -d $POSTGRES_DB -f /scripts/build_image_db.sql

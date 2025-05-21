@@ -1,0 +1,27 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: postgresql-ha
+  namespace: kube-system
+spec:
+  repo: https://charts.bitnami.com/bitnami
+  chart: postgresql-ha
+  version: 16.0.5
+  targetNamespace: development
+  createNamespace: true
+  valuesContent: |-
+    global:
+      postgresql:
+        password: "postgres"
+      security:
+        allowInsecureImages: true
+    persistence:
+      storageClass: local-path
+    postgresql:
+      image:
+        registry: ghcr.io
+        repository: sofushn/ruc-workshop-dds-project
+        tag: database-latest
+      replicaCount: 3
+    pgpool:
+      replicaCount: 1
