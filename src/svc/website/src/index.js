@@ -61,10 +61,12 @@ function postImageData()
     EXIF.getData(imageFile, function() {
         let lat = EXIF.getTag(this, "GPSLatitude");
         let lng = EXIF.getTag(this, "GPSLongitude");
-        if (lat && lng) {
+        let height = EXIF.getTag(this, "GPSAltitude");
+        if (lat && lng && height) {
             lat = lat[0] + (lat[1] / 60) + (lat[2] / 3600);
             lng = lng[0] + (lng[1] / 60) + (lng[2] / 3600);
-
+            height = parseFloat(height);
+            
             fetch(fetchUrl, {
                 method: 'POST',
                 headers: {
@@ -75,7 +77,8 @@ function postImageData()
                     imageId: image_id,
                     latitude: lat,
                     longitude: lng,
-                    mapId: mapid
+                    mapId: mapid,
+                    height: height
                 })
             })
                 .then(response => {

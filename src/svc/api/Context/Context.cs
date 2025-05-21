@@ -26,6 +26,7 @@ public class MetadataContext : DbContext
         modelBuilder.Entity<GPSCoordinate>().Property(x => x.Longitude).HasColumnName("longitude");
         modelBuilder.Entity<GPSCoordinate>().Property(x => x.ImageId).HasColumnName("image_id");
         modelBuilder.Entity<GPSCoordinate>().Property(x => x.MapId).HasColumnName("map_id");
+        modelBuilder.Entity<GPSCoordinate>().Property(x => x.Height).HasColumnName("height");
 
         modelBuilder.Entity<Map>().ToTable("map");
         modelBuilder.Entity<Map>().Property(x => x.Id).HasColumnName("id");
