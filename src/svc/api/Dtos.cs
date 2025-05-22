@@ -11,14 +11,26 @@ public class WaypointPostRequest
     public required int MapId { get; set; }
 
     public static ValueTask<WaypointPostRequest?> BindAsync(HttpContext httpContext, ParameterInfo parameter)
-        => ValueTask.FromResult<WaypointPostRequest?>(new() {
-            Latitude = decimal.Parse(httpContext.Request.Form["latitude"]),
-            Longitude = decimal.Parse(httpContext.Request.Form["longitude"]),
-            Height = decimal.Parse(httpContext.Request.Form["height"]),
-            MapId = int.Parse(httpContext.Request.Form["mapId"]),
-            File = httpContext.Request.Form.Files[0]
+    {
+        if (httpContext.Request.Form.Files.Count == 0)
+            return ValueTask.FromResult<WaypointPostRequest?>(null);
+
+        if (!decimal.TryParse(httpContext.Request.Form["latitude"], out decimal latitude) ||
+            !decimal.TryParse(httpContext.Request.Form["longitude"], out decimal longitude) ||
+            !decimal.TryParse(httpContext.Request.Form["height"], out decimal height) ||
+            !int.TryParse(httpContext.Request.Form["mapId"], out int mapId))
+        {
+            return ValueTask.FromResult<WaypointPostRequest?>(null);
         }
-        );
+
+        return ValueTask.FromResult<WaypointPostRequest?>(new() {
+            Latitude = latitude,
+            Longitude = longitude,
+            Height = height,
+            MapId = mapId,
+            File = httpContext.Request.Form.Files[0]
+        });
+    }
 }
 
 public class ImageApiPostResponse
