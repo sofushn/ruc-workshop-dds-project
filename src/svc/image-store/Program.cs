@@ -45,7 +45,7 @@ image.MapGet("images/{fileName}", ApiHandler.Get)
 
 bool isPrimary = app.Configuration.GetValue<bool>("ReplicationOptions:IsPrimary");
 bool isReplicationEnabled = app.Configuration.GetValue<bool>("ReplicationOptions:Enabled");
-if (app.Environment.IsDevelopment() || !isReplicationEnabled || isPrimary) {
+if (app.Environment.IsDevelopment() || !isReplicationEnabled || (isReplicationEnabled && isPrimary)) {
 image.MapPost("images", ApiHandler.Post)
     .DisableAntiforgery() // Disable CSRF protection for this endpoint
     .WithName("PostImage")
