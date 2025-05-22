@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres
   labels: 
@@ -25,5 +25,15 @@ spec:
           value: postgres  # Replace with your desired password
         - name: POSTGRES_DB
           value: postgres-db  # Replace with your desired database name
+        - name: REPMGR_PARTNER_NODES
+          value: postgres-0
+        - name: REPMGR_NODE_NAME
+          value: postgres-0
+        - name: REPMGR_NODE_NETWORK_NAME
+          value: postgres-0
+        - name: REPMGR_PRIMARY_HOST
+          value: postgres-0
+        - name: REPMGR_PASSWORD
+          value: repmgrpass
         ports:
         - containerPort: 5432
