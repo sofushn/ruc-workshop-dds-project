@@ -23,3 +23,7 @@ export function isResponseImage(response) {
         contentLength > 0
     );
 }
+
+export function randomDecimal(min, max) {
+    return (Math.random() * (max - min) + min).toFixed(15);
+}
