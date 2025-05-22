@@ -1,6 +1,5 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { open } from 'k6/experimental/fs';
 import { isResponseImage, randomDecimal } from "./helpers/checkUtils.js";
 
 const endpoints = [
@@ -12,6 +11,7 @@ const endpoints = [
             'response time < 800ms': (r) => r.timings.duration < 800,
             'response is an image': (r) => isResponseImage(r),
         },
+        ratio: 1,
     },
     {
         url: 'http://localhost:8080/api/map/1',
@@ -20,6 +20,7 @@ const endpoints = [
             'status is 200': (r) => r.status === 200,
             'response time < 800ms': (r) => r.timings.duration < 800,
         },
+        ratio: 0.01,
     },
     {
         url: 'http://localhost:8080/api/map/1/waypoints',
@@ -28,6 +29,7 @@ const endpoints = [
             'status is 200': (r) => r.status === 200,
             'response time < 800ms': (r) => r.timings.duration < 800,
         },
+        ratio: 0.05,
     },
     {
         url: 'http://localhost:8080/api/waypoints/1',
@@ -41,11 +43,12 @@ const endpoints = [
             'status is 201': (r) => r.status === 201,
             'response time < 1000ms': (r) => r.timings.duration < 1000,
         },
+        ratio: 0.0001,
     },
 ];
 
 const urlIndex = __ENV.URL_INDEX ? parseInt(__ENV.URL_INDEX) : 0;
-const endpoint = endpoints[urlIndex];
+const combinedTest = __ENV.COMBINED_TEST ? __ENV.COMBINED_TEST === 'true' : false;
 
 export const options = {
     stages: [
@@ -56,6 +59,7 @@ export const options = {
 };
 
 export default function () {
+    let endpoint = combinedTest ? pickEndpointWeighted() : endpoints[urlIndex];
     let res;
     if (endpoint.method === 'GET') {
         res = http.get(endpoint.url);
@@ -74,4 +78,15 @@ export default function () {
     }
     check(res, endpoint.checks);
     sleep(1);
+}
+
+function pickEndpointWeighted() {
+    const total = endpoints.reduce((sum, e) => sum + e.ratio, 0);
+    let r = Math.random() * total;
+    let cumulative = 0;
+    for (const e of endpoints) {
+        cumulative += e.ratio;
+        if (r < cumulative) return e;
+    }
+    return endpoints[0];
 }
