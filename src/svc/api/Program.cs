@@ -41,18 +41,18 @@ app.UseHttpsRedirection();
 
 RouteGroupBuilder apiGroup = app.MapGroup("/api");
 
-apiGroup.MapGet("coordinates/{coordinateId}", CoordinatesHandler.GetById);
-apiGroup.MapPost("coordinates/{coordinateId}", CoordinatesHandler.Create)
+apiGroup.MapGet("waypoint/{id}", WaypointHandler.GetById);
+apiGroup.MapPost("waypoint/{id}", WaypointHandler.Create)
     .Accepts<WaypointPostRequest>("multipart/form-data")
     .Produces(StatusCodes.Status201Created)
     .Produces(StatusCodes.Status400BadRequest)
     .Produces(StatusCodes.Status500InternalServerError)
     .DisableAntiforgery(); // Disable CSRF protection for this endpoint
-apiGroup.MapDelete("coordinates/{coordinateId}", CoordinatesHandler.Delete);
-apiGroup.MapPut("coordinates/{coordinateId}", CoordinatesHandler.Update);
+apiGroup.MapDelete("waypoint/{id}", WaypointHandler.Delete);
+apiGroup.MapPut("waypoint/{id}", WaypointHandler.Update);
 
-apiGroup.MapGet("map/{mapId}/coordinates", CoordinatesHandler.GetAll);
+apiGroup.MapGet("map/{id}/waypoints", WaypointHandler.GetAll);
 apiGroup.MapGet("map", MapHandler.GetAll);
-apiGroup.MapGet("map/{mapId}", MapHandler.GetById);
+apiGroup.MapGet("map/{id}", MapHandler.GetById);
 
 app.Run();
