@@ -32,7 +32,7 @@ const endpoints = [
         ratio: 0.05,
     },
     {
-        url: 'http://localhost:8080/api/waypoints/1',
+        url: 'http://localhost:8080/api/waypoint/1',
         method: 'POST',
         body: {
             mapId: 1,
