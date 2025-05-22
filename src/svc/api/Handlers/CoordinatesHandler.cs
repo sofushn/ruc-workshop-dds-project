@@ -1,20 +1,12 @@
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Net.Http.Headers;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Api;
 
 public class CoordinatesHandler {
-
-    private readonly IHttpClientFactory _httpClientFactory;
-
-    public CoordinatesHandler(IHttpClientFactory httpClientFactory) =>
-        _httpClientFactory = httpClientFactory;
-
     public static IResult GetAll(int mapId, [FromServices] MetadataContext context)
         => Results.Ok(context.GPSCoordinates.Where(x => x.MapId == mapId).AsNoTracking());
     
@@ -24,31 +16,33 @@ public class CoordinatesHandler {
         return coord is not null ? Results.Ok(coord) : Results.NotFound();
     }
 
-    public async Task<IResult> Create(GPSCoordinate coordinate, [FromServices] MetadataContext context, IFormFile image )
+    public static async Task<IResult> Create(
+        [FromServices] MetadataContext context,
+        [FromServices] IHttpClientFactory httpClientFactory,
+        WaypointPostRequest request)
     {
-        /*
-        var httpRequestMessage = new HttpRequestMessage(
-            HttpMethod.Post,
-            "http//:image-api/images"
-        )
-        {
-            Headers =
-            {HeaderNames.Accept, "images"}
+        using StreamContent fileContent = new(request.File.OpenReadStream());
+        using MultipartFormDataContent content = new() {
+            { fileContent, "file", request.File.FileName }
         };
-        */
 
-        var httpClient = _httpClientFactory.CreateClient();
+        using HttpClient client = httpClientFactory.CreateClient("image-api");
+        using HttpResponseMessage response = await client.PostAsync("image-api/images", content);
 
-        var imageJson = new StringContent(
-            JsonSerializer.Serialize(image),
-            Encoding.UTF8,
-            Application.Json
-        );
+        if (!response.IsSuccessStatusCode)
+            return Results.Problem($"Failed to upload image: {response.StatusCode}, {await response.Content.ReadAsStringAsync()}");
 
-        using var HttpResponseMessage =
-            await httpClient.PostAsync("image-api/images", imageJson);
+        ImageApiPostResponse? postResp = await response.Content.ReadFromJsonAsync<ImageApiPostResponse>();
 
-        HttpResponseMessage.EnsureSuccessStatusCode();
+        GPSCoordinate coordinate = new() {
+            Latitude = request.Latitude,
+            Longitude = request.Longitude,
+            ImageId = (postResp?.Id ?? Guid.Empty).ToString(),
+            Height = request.Height,
+            MapId = request.MapId
+        };
+
+        Console.WriteLine($"Coordinate: {JsonSerializer.Serialize(coordinate)}");
 
         context.GPSCoordinates.Add(coordinate);
         context.SaveChanges();

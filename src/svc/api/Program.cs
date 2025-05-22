@@ -10,7 +10,13 @@ builder.Services.AddDbContext<MetadataContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresDatabase")));
 
 
-builder.Services.AddHttpClient();
+
+builder.Services.AddHttpClient("image-api", client =>
+{
+    string imageStoreUrl = builder.Configuration.GetValue<string>("ImageStoreUrl")
+        ?? throw new Exception("ImageStoreUrl is not configured.");
+    client.BaseAddress = new Uri(imageStoreUrl);
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,7 +42,12 @@ app.UseHttpsRedirection();
 RouteGroupBuilder apiGroup = app.MapGroup("/api");
 
 apiGroup.MapGet("coordinates/{coordinateId}", CoordinatesHandler.GetById);
-apiGroup.MapPost("coordinates/{coordinateId}", CoordinatesHandler.Create);
+apiGroup.MapPost("coordinates/{coordinateId}", CoordinatesHandler.Create)
+    .Accepts<WaypointPostRequest>("multipart/form-data")
+    .Produces(StatusCodes.Status201Created)
+    .Produces(StatusCodes.Status400BadRequest)
+    .Produces(StatusCodes.Status500InternalServerError)
+    .DisableAntiforgery(); // Disable CSRF protection for this endpoint
 apiGroup.MapDelete("coordinates/{coordinateId}", CoordinatesHandler.Delete);
 apiGroup.MapPut("coordinates/{coordinateId}", CoordinatesHandler.Update);
 
