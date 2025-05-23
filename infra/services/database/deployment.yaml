@@ -6,6 +6,7 @@ metadata:
     app: postgres
   namespace: development
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -16,24 +17,24 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: ghcr.io/sofushn/ruc-workshop-dds-project:database-latest
-        env:
-        - name: POSTGRES_USER
-          value: postgres  # Replace with your desired username
-        - name: POSTGRES_PASSWORD
-          value: postgres  # Replace with your desired password
-        - name: POSTGRES_DB
-          value: postgres-db  # Replace with your desired database name
-        - name: REPMGR_PARTNER_NODES
-          value: postgres-0
-        - name: REPMGR_NODE_NAME
-          value: postgres-0
-        - name: REPMGR_NODE_NETWORK_NAME
-          value: postgres-0
-        - name: REPMGR_PRIMARY_HOST
-          value: postgres-0
-        - name: REPMGR_PASSWORD
-          value: repmgrpass
-        ports:
-        - containerPort: 5432
+        - name: postgres
+          image: ghcr.io/sofushn/ruc-workshop-dds-project:database-latest
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: postgres
+            - name: POSTGRES_DB
+              value: postgres
+            - name: REPMGR_PARTNER_NODES
+              value: postgres-0
+            - name: REPMGR_NODE_NAME
+              value: postgres-0
+            - name: REPMGR_NODE_NETWORK_NAME
+              value: postgres-0
+            - name: REPMGR_PRIMARY_HOST
+              value: postgres-0
+            - name: REPMGR_PASSWORD
+              value: repmgrpass
+          ports:
+            - containerPort: 5432
