@@ -22,4 +22,4 @@ spec:
         - name: ImageStoreUrl
           value: "http://image-store.development.svc:8080"
         - name: ConnectionStrings__PostgresDatabase
-          value: "Host=postgres.development.svc;Port=5432;Database=postgres-db;Username=postgres;Password=postgres"
+          value: "Host=postgres.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"

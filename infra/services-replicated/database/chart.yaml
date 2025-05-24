@@ -13,6 +13,8 @@ spec:
     global:
       postgresql:
         password: "postgres"
+        database: "postgres"
+        username: "postgres"
       security:
         allowInsecureImages: true
     persistence:
