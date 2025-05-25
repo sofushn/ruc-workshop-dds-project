@@ -38,7 +38,7 @@ const endpoints = [
     },
     {
         name: 'PostWaypoint',
-        url: 'http://localhost:8080/api/waypoint/1',
+        url: 'http://localhost:8080/api/waypoint',
         method: 'POST',
         body: {
             mapId: 1,
