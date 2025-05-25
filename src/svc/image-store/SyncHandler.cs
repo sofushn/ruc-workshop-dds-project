@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace ImageStoreAPI;
 
 public static class SyncHandler {
-    public static IResult Request([FromServices] IWebHostEnvironment environment, SyncRequest request) {
-        Utils.WriteToDisk(environment, request.Id, request.File);
+    public static async Task<IResult> Request([FromServices] IWebHostEnvironment environment, SyncRequest request) {
+        await Utils.WriteToDiskAsync(environment, request.Id, request.File);
         return Results.Ok();
     }
 
