@@ -56,7 +56,7 @@ function postImageData()
     let mapid = document.getElementById("coordinateMapId").value;
     let imageFile = document.getElementById("imageFile").files[0];
     let fileName = imageFile.name;
-    let fetchUrl = apiHostUrl + "waypoint/1";
+    let fetchUrl = apiHostUrl + "waypoint";
 
     EXIF.getData(imageFile, function() {
         let lat = EXIF.getTag(this, "GPSLatitude");

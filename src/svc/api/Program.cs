@@ -42,7 +42,7 @@ app.UseHttpsRedirection();
 RouteGroupBuilder apiGroup = app.MapGroup("/api");
 
 apiGroup.MapGet("waypoint/{id}", WaypointHandler.GetById);
-apiGroup.MapPost("waypoint/{id}", WaypointHandler.Create)
+apiGroup.MapPost("waypoint", WaypointHandler.Create)
     .Accepts<WaypointPostRequest>("multipart/form-data")
     .Produces(StatusCodes.Status201Created)
     .Produces(StatusCodes.Status400BadRequest)
