@@ -55,6 +55,7 @@ function postImageData()
 {
     let mapid = document.getElementById("coordinateMapId").value;
     let imageFile = document.getElementById("imageFile").files[0];
+    let fileName = imageFile.name;
     let fetchUrl = apiHostUrl + "waypoint/1";
 
     EXIF.getData(imageFile, function() {
@@ -71,7 +72,7 @@ function postImageData()
             formData.append("longitude", lng);
             formData.append("mapId", mapid);
             formData.append("height", height);
-            formData.append("file", imageFile);
+            formData.append("file", imageFile, fileName);
 
             fetch(fetchUrl, {
                 method: 'POST',
