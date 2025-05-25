@@ -41,7 +41,7 @@ public class WaypointHandler {
 
         context.Waypoints.Add(waypoint);
         context.SaveChanges();
-        return Results.Created($"/waypoint/{waypoint.ImageId}", waypoint);
+        return Results.Created($"/waypoint/{waypoint.Id}", waypoint);
     }
 
     public static IResult Update(int id, Waypoint updated, [FromServices] MetadataContext context)
