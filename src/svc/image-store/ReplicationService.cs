@@ -20,7 +20,7 @@ public class ReplicationService {
         _options = options;
     }
 
-    public async Task SyncFileAsync(Guid id, string fileId) {
+    public async Task SyncFileAsync(string fileId) {
         if (!_options.Value.IsPrimary || !_options.Value.Enabled)
             return;
         
@@ -45,7 +45,7 @@ public class ReplicationService {
         };
         
         using HttpClient client = _httpClientFactory.CreateClient();
-        HttpResponseMessage response = await client.PostAsync($"{url}/sync/request", content);
+        using HttpResponseMessage response = await client.PostAsync($"{url}/sync/request", content);
 
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to sync file to replica: {url}");

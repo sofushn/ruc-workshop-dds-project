@@ -34,12 +34,12 @@ public static class ApiHandler {
         [Required] IFormFile file, 
         HttpRequest request) 
     {
-        Guid fileName = Guid.NewGuid();
-        await Utils.WriteToTempAsync(environment, fileName.ToString(), file);
+        string fileName = Guid.NewGuid().ToString();
+        await Utils.WriteToTempAsync(environment, fileName, file);
 
-        await replicationService.SyncFileAsync(fileName, fileName.ToString());
+        await replicationService.SyncFileAsync(fileName);
 
-        Utils.MoveFileToPermenentStorage(environment, fileName.ToString());
+        Utils.MoveFileToPermenentStorage(environment, fileName);
 
         string imgUrl = $"{request.GetEncodedUrl()}/{fileName}.jpg";
 
