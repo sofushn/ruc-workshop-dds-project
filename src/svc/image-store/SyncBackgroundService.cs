@@ -56,7 +56,7 @@ public class SyncBackgroundService : BackgroundService
             return;
         }
 
-        HttpClient client = _httpClientFactory.CreateClient();
+        using HttpClient client = _httpClientFactory.CreateClient();
         HttpResponseMessage response = await client.PostAsJsonAsync($"{url}/sync/check", ids);
 
         if (!response.IsSuccessStatusCode) {
@@ -81,7 +81,7 @@ public class SyncBackgroundService : BackgroundService
                 { new StringContent(id), "id" }
             };
 
-            HttpResponseMessage syncResponse = await client.PostAsync($"{url}/sync/request", content);
+            using HttpResponseMessage syncResponse = await client.PostAsync($"{url}/sync/request", content);
             if (!syncResponse.IsSuccessStatusCode) 
                 _logger.LogWarning($"Failed to sync file ({id}) to replica: {url}");
         }
