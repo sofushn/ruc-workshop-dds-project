@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: backend-api
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:api-latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ImageStoreUrl
+          value: "http://image-store-primary.development.svc:8080"
+        - name: ConnectionStrings__PostgresDatabase
+          value: "Host=postgresql-ha-pgpool.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
