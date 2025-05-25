@@ -11,3 +11,6 @@ Run WINGET command:
 
 Save test result:
 $timestamp = Get-Date -Format "yyyyMMdd-HHmmss"; if (!(Test-Path -Path "./results")) { New-Item -ItemType Directory -Path "../results" }; k6 run --summary-export="results/summary-$timestamp.json" --out csv="results/results-$timestamp.csv" ./breakpoint-test.js | Tee-Object -FilePath "results/output-$timestamp.txt"
+
+Optional:
+Remove tag "requestId" from tests, if performance is affected. If kept it will save current VUs ID and their iteration ID, for each request
