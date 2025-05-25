@@ -1,6 +1,8 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { isResponseImage, randomDecimal } from "./helpers/checkUtils.js";
+import { tagWithCurrentStageProfile } from 'https://jslib.k6.io/k6-utils/1.3.0/index.js';
+import { tagWithCurrentStageIndex } from 'https://jslib.k6.io/k6-utils/1.3.0/index.js';
 
 const endpoints = [
     {
@@ -59,6 +61,9 @@ export const options = {
 };
 
 export default function () {
+    tagWithCurrentStageIndex();
+    tagWithCurrentStageProfile();
+    
     let endpoint = combinedTest ? pickEndpointWeighted() : endpoints[urlIndex];
     let res;
     if (endpoint.method === 'GET') {
