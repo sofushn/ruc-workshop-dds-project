@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: setup-initialization
+  namespace: development
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: setup
+        image: workshop-setup:dev
+        env:
+        - name: IMAGE_STORE_URL
+          value: "http://image-store.development.svc:8080"
+        - name: POSTGRES_CONNECTION_STRING
+          value: "Host=postgres.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
