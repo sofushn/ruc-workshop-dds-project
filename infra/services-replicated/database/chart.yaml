@@ -25,5 +25,19 @@ spec:
         repository: sofushn/ruc-workshop-dds-project
         tag: database-latest
       replicaCount: 3
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "500m"
+        limits:
+          memory: "512Mi"
+          cpu: "1"
     pgpool:
       replicaCount: 1
+      resources:
+        requests:
+          memory: "128Mi"
+          cpu: "250m"
+        limits:
+          memory: "256Mi"
+          cpu: "500m"

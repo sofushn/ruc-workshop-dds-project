@@ -26,6 +26,13 @@ spec:
     volumeMounts:
     - name: image-store-data
       mountPath: /images
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "250m"
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
   volumes:
   - name: image-store-data
     persistentVolumeClaim: 
