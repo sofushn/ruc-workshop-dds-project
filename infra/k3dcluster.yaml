@@ -3,7 +3,7 @@ kind: Simple
 metadata:
   name: street-view
 servers: 1
-agents: 2
+agents: 3
 kubeAPI:
   host: localhost
 image: rancher/k3s:v1.32.3-k3s1
