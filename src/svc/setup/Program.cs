@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using ExifLibrary;
 using Npgsql;
+using NpgsqlTypes;
 
 string waypointsUrl = "https://api.github.com/repos/sofushn/ruc-workshop-dds-project/contents/images/waypoints";
 string mapDataUrl = "https://raw.githubusercontent.com/sofushn/ruc-workshop-dds-project/main/images/maps/2dmap.jpg";
@@ -91,9 +92,9 @@ async Task HandleWaypoint(string downloadUrl, int mapId)
         "INSERT INTO waypoint (image_id, latitude, longitude, height, map_id) VALUES (@ImageId, @Latitude, @Longitude, @Height, @MapId)",
         connection);
     command.Parameters.AddWithValue("ImageId", imageResp.Value.imageId);
-    command.Parameters.AddWithValue("Latitude", metadata.Latitude);
-    command.Parameters.AddWithValue("Longitude", metadata.Longitude);
-    command.Parameters.AddWithValue("Height", metadata.Height);
+    command.Parameters.AddWithValue("Latitude", NpgsqlDbType.Double, metadata.Latitude);
+    command.Parameters.AddWithValue("Longitude", NpgsqlDbType.Double, metadata.Longitude);
+    command.Parameters.AddWithValue("Height", NpgsqlDbType.Double, metadata.Height);
     command.Parameters.AddWithValue("MapId", mapId);
 
     await command.ExecuteNonQueryAsync();
