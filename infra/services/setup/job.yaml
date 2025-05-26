@@ -10,7 +10,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: setup
-        image: workshop-setup:dev
+        image: ghcr.io/sofushn/ruc-workshop-dds-project:setup-latest
         env:
         - name: IMAGE_STORE_URL
           value: "http://image-store.development.svc:8080"
