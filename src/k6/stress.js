@@ -1,56 +1,10 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { isResponseImage, randomDecimal } from "./helpers/checkUtils.js";
+import { randomDecimal } from "./helpers/checkUtils.js";
+import { getEndpoint } from './helpers/endpoints.js';
+import { getImageIds } from './helpers/images.js';
 import { tagWithCurrentStageProfile } from 'https://jslib.k6.io/k6-utils/1.3.0/index.js';
 import { tagWithCurrentStageIndex } from 'https://jslib.k6.io/k6-utils/1.3.0/index.js';
-
-const endpoints = [
-    {
-        url: 'http://localhost:8080/image-api/images/1.jpg',
-        method: 'GET',
-        checks: {
-            'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
-            'response is an image': (r) => isResponseImage(r),
-        },
-        ratio: 1,
-    },
-    {
-        url: 'http://localhost:8080/api/map/1',
-        method: 'GET',
-        checks: {
-            'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
-        },
-        ratio: 0.01,
-    },
-    {
-        url: 'http://localhost:8080/api/map/1/waypoints',
-        method: 'GET',
-        checks: {
-            'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
-        },
-        ratio: 0.05,
-    },
-    {
-        url: 'http://localhost:8080/api/waypoint',
-        method: 'POST',
-        body: {
-            mapId: 1,
-            height: 50.0,
-            filePath: 'test.jpg'
-        },
-        checks: {
-            'status is 201': (r) => r.status === 201,
-            'response time < 1000ms': (r) => r.timings.duration < 1000,
-        },
-        ratio: 0.0001,
-    },
-];
-
-const urlIndex = __ENV.URL_INDEX ? parseInt(__ENV.URL_INDEX) : 0;
-const combinedTest = __ENV.COMBINED_TEST ? __ENV.COMBINED_TEST === 'true' : false;
 
 export const options = {
     stages: [
@@ -60,11 +14,22 @@ export const options = {
     ],
 };
 
-export default function () {
+export function setup() {
+    const imageIds = getImageIds();
+    console.log(`Fetched ${imageIds.length} image IDs.`);
+    console.log(`Image Id: ${imageIds[0]}`);
+    return { 
+        imageIds,
+    };
+}
+
+export default function (data) {
     tagWithCurrentStageIndex();
     tagWithCurrentStageProfile();
     
-    let endpoint = combinedTest ? pickEndpointWeighted() : endpoints[urlIndex];
+    const imageId = data.imageIds[Math.floor(Math.random() * data.imageIds.length)];
+    const endpoint = getEndpoint(imageId);
+
     let res;
     if (endpoint.method === 'GET') {
         res = http.get(endpoint.url);
@@ -83,15 +48,4 @@ export default function () {
     }
     check(res, endpoint.checks);
     sleep(1);
-}
-
-function pickEndpointWeighted() {
-    const total = endpoints.reduce((sum, e) => sum + e.ratio, 0);
-    let r = Math.random() * total;
-    let cumulative = 0;
-    for (const e of endpoints) {
-        cumulative += e.ratio;
-        if (r < cumulative) return e;
-    }
-    return endpoints[0];
 }
