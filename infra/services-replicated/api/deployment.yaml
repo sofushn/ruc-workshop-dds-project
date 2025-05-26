@@ -23,3 +23,10 @@ spec:
           value: "http://image-store-primary.development.svc:8080"
         - name: ConnectionStrings__PostgresDatabase
           value: "Host=postgresql-ha-pgpool.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
