@@ -8,9 +8,9 @@ import { tagWithCurrentStageIndex } from 'https://jslib.k6.io/k6-utils/1.3.0/ind
 
 export const options = {
     stages: [
-        { duration: "2m", target: 50 },
-        { duration: "5m", target: 50 },
-        { duration: "2m", target: 0 },
+        { duration: "1m", target: 50 },
+        { duration: "4m", target: 50 },
+        { duration: "1m", target: 0 },
     ],
 };
 

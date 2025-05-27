@@ -8,7 +8,7 @@ import { tagWithCurrentStageIndex } from 'https://jslib.k6.io/k6-utils/1.3.0/ind
 
 export const options = {
     stages: [
-        { duration: '30m', target: 500 },
+        { duration: '10m', target: 500 },
     ],
     thresholds: {
         'http_req_failed': [{ threshold: 'rate<0.01', abortOnFail: true, delayAbortVal: '20s' }],
