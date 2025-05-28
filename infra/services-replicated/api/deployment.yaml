@@ -25,8 +25,8 @@ spec:
           value: "Host=postgresql-ha-pgpool.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
         resources:
           requests:
-            memory: "128Mi"
-            cpu: "250m"
+            memory: "64Mi"
+            cpu: "10m"
           limits:
-            memory: "256Mi"
-            cpu: "500m"
+            memory: "128Mi"
+            cpu: "50m"
