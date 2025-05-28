@@ -40,6 +40,47 @@ timestamp=$(date +"%Y%m%d_%H%M%S") k6 run <test> --summary-export=results/summar
 timestamp=$(date +"%Y%m%d_%H%M%S") k6 run stress.js --summary-export=results/summary-${timestamp}.json --out csv=results/results-${timestamp}.csv --out json=results/results-${timestamp}.json --env BASE_URL=http://192.168.0.2:8080
 ```
 
+### Tests
+
+
+__breakpoint__:
+```
+api: stages: [
+        { duration: '10m', target: 10000 },
+    ]
+image: stages: [
+        { duration: '10m', target: 500 },
+    ]
+```
+
+__spike__:
+```
+api: stages: [
+        { duration: "30s", target: 1000 },
+        { duration: "1m", target: 0 },
+    ]
+        ,
+image: stages: [
+        { duration: "15s", target: 100 },
+        { duration: "1m", target: 0 },
+    ]
+```
+
+__stress__:
+```
+api: stages: [
+        { duration: "1m", target: 500 },
+        { duration: "4m", target: 500 },
+        { duration: "1m", target: 0 },
+    ],
+image: stages: [
+        { duration: '1m', target: 50 },
+        { duration: '4m', target: 50 },
+        { duration: '1m', target: 0 },
+    ],
+```
+
+
 ## Options
 
 | Env name | Possible values | Default
