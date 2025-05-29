@@ -1,7 +1,9 @@
 import http from 'k6/http';
 import { randomDecimal } from './checkUtils.js';
 
-export function performRequest(endpoint, testFile, tags) {
+const testFile = open('../test.jpg', 'b')
+
+export function performRequest(endpoint, tags) {
     if (endpoint.method === 'GET') {
         return http.get(endpoint.url, {tags});
     } else if (endpoint.method === 'POST') {
@@ -9,11 +11,11 @@ export function performRequest(endpoint, testFile, tags) {
         let latitude = randomDecimal(-90, 90);
 
         const form = {
-            Latitude: latitude,
-            Longitude: longitude,
-            MapId: String(endpoint.body.mapId),
-            Height: String(endpoint.body.height),
-            File: testFile,
+            latitude: latitude,
+            longitude: longitude,
+            mapId: endpoint.body.mapId,
+            height: endpoint.body.height,
+            file: http.file(testFile, 'test.jpg', 'image/jpeg')
         };
         return http.post(endpoint.url, form, {tags});    
     }

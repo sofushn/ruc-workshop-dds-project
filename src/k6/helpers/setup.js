@@ -1,7 +1,5 @@
 import http from 'k6/http';
 
-const testFile = http.file(open('../test.jpg', 'b'), 'test.jpg')
-
 function getImageIds () {
     const BASE_URL = __ENV.BASE_URL ?? 'http://localhost:8080';
     const response = http.get(`${BASE_URL}/api/map/1/waypoints`);
@@ -30,6 +28,5 @@ export function defaultSetup() {
     
     return { 
         imageIds,
-        testFile,
     };
 }

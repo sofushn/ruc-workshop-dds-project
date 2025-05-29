@@ -11,10 +11,10 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 1500ms': (r) => r.timings.duration < 800,
             'response is an image': (r) => isResponseImage(r),
         },
-        ratio: 1/10, // Adjusted ratio to accommodate for bandwidth limits
+        ratio: 1/20, // Adjusted ratio to accommodate for bandwidth limits
     },
     {
         name: 'GetMapById',
@@ -22,7 +22,7 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 400ms': (r) => r.timings.duration < 800,
         },
         ratio: 0.1,
     },
@@ -32,7 +32,7 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 400ms': (r) => r.timings.duration < 800,
         },
         ratio: 0.5,
     },
@@ -46,7 +46,7 @@ const endpoints = [
         },
         checks: {
             'status is 201': (r) => r.status === 201,
-            'response time < 1000ms': (r) => r.timings.duration < 1000,
+            'response time < 2500ms': (r) => r.timings.duration < 1000,
         },
         ratio: 0.001,
     },

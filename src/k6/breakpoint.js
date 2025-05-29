@@ -56,7 +56,7 @@ export default function (data) {
         request_type: endpoint.method
     };
 
-    let res = performRequest(endpoint, data.testFile, tags);
+    let res = performRequest(endpoint, tags);
     check(res, endpoint.checks, tags);
     sleep(1);
 }
