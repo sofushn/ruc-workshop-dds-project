@@ -3,7 +3,7 @@
 TEST_SCRIPTS=" stress.js spike.js breakpoint.js"
 API_TEST_TYPES="GetMapById GetWaypointsByMapId"
 OTHER_TEST_TYPES="GetImageById PostWaypoint Combined"
-SLEEP_DURATION_SECONDS=120
+SLEEP_DURATION_SECONDS=60
 DEFAULT_BASE_URL="http://localhost:8080"
 
 SINGLE_TEST_RUNNER_SCRIPT="./run.sh"
@@ -61,11 +61,12 @@ for script_file in $TEST_SCRIPTS; do
         continue
     fi
 
-    echo "\nProcessing k6 script: $script_file"
+    echo ""
+    echo "Processing k6 script: $script_file"
     
     # Loop for API calls (higher targets)
     for test_type in $API_TEST_TYPES; do
-        echo "\n  -> Running $script_file with TEST_TYPE: $test_type (API)"
+        echo "  -> Running $script_file with TEST_TYPE: $test_type (API)"
         total_tests_run=$((total_tests_run + 1))
         
         api_stages=$(get_api_stages "$script_file")
@@ -89,7 +90,8 @@ for script_file in $TEST_SCRIPTS; do
     
     # Loop for all other test types (lower targets)
     for test_type in $OTHER_TEST_TYPES; do
-        echo "\n  -> Running $script_file with TEST_TYPE: $test_type (Other)"
+        echo ""
+        echo "  -> Running $script_file with TEST_TYPE: $test_type (Other)"
         total_tests_run=$((total_tests_run + 1))
         
         image_stages=$(get_image_stages "$script_file")
@@ -107,12 +109,14 @@ for script_file in $TEST_SCRIPTS; do
             echo "    Completed $script_file (TEST_TYPE: $test_type) successfully."
         fi
 
-        echo "\nSleeping for $SLEEP_DURATION_SECONDS seconds before potential next test..."
+        echo ""
+        echo "Sleeping for $SLEEP_DURATION_SECONDS seconds before potential next test..."
         sleep $SLEEP_DURATION_SECONDS
     done
 done
 
-echo "\n-------------------------------------"
+echo ""
+echo "-------------------------------------"
 echo "Batch k6 test execution finished."
 echo "Total test configurations run: $total_tests_run"
 echo "Total failed: $total_tests_failed"
