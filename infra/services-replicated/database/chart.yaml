@@ -27,11 +27,11 @@ spec:
       replicaCount: 3
       resources:
         requests:
-          memory: "256Mi"
+          memory: "128Mi"
           cpu: "50m"
         limits:
           memory: "512Mi"
-          cpu: "150m"
+          cpu: "250m"
       maxConnections: 500
     pgpool:
       replicaCount: 3
@@ -43,4 +43,4 @@ spec:
           cpu: "100m"
         limits:
           memory: 1Gi
-          cpu: "200m"
+          cpu: "300m"
