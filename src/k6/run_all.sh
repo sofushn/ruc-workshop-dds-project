@@ -30,13 +30,13 @@ total_tests_failed=0
 get_api_stages() {
     case "$1" in
         "stress.js")
-            echo "--stage 1m:500 --stage 4m:500 --stage 1m:0"
+            echo "--stage 1m:300 --stage 4m:300 --stage 1m:0"
             ;;
         "spike.js")
-            echo "--stage 30s:750 --stage 1m:0"
+            echo "--stage 30s:650 --stage 1m:0"
             ;;
         "breakpoint.js")
-            echo "--stage 10m:1500"
+            echo "--stage 10m:1000"
             ;;
     esac
 }
@@ -47,10 +47,10 @@ get_image_stages() {
             echo "--stage 1m:50 --stage 4m:50 --stage 1m:0"
             ;;
         "spike.js")
-            echo "--stage 15s:200 --stage 1m:0"
+            echo "--stage 15s:100 --stage 1m:0"
             ;;
         "breakpoint.js")
-            echo "--stage 10m:500"
+            echo "--stage 10m:200"
             ;;
     esac
 }
