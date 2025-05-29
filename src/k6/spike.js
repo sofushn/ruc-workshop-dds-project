@@ -46,6 +46,7 @@ export function setup() {
     console.log(`Image Id: ${imageIds[0]}`);
     return { 
         imageIds,
+        testFile: http.file(open(endpoint.body.filePath, 'b'), 'test.jpg'),
     };
 }
 
@@ -75,7 +76,7 @@ export default function (data) {
             Longitude: longitude,
             MapId: String(endpoint.body.mapId),
             Height: String(endpoint.body.height),
-            File: http.file(open(endpoint.body.filePath, 'b'), 'test.jpg'),
+            File: testFile,
         };
         res = http.post(endpoint.url, form, { tags });    
     }

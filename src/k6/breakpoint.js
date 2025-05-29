@@ -43,9 +43,10 @@ export const options = {
 export function setup() {
     const imageIds = getImageIds();
     console.log(`Fetched ${imageIds.length} image IDs.`);
-    console.log(`Image Id: ${imageIds[0]}`);
+    console.log(`First image id: ${imageIds[0]}\n`);
     return { 
         imageIds,
+        testFile: http.file(open(endpoint.body.filePath, 'b'), 'test.jpg'),
     };
 }
 
@@ -75,7 +76,7 @@ export default function (data) {
             Longitude: longitude,
             MapId: String(endpoint.body.mapId),
             Height: String(endpoint.body.height),
-            File: http.file(open(endpoint.body.filePath, 'b'), 'test.jpg'),
+            File: testFile,
         };
         res = http.post(endpoint.url, form, {tags});    
     }
