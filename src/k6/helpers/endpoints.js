@@ -42,8 +42,7 @@ const endpoints = [
         method: 'POST',
         body: {
             mapId: 1,
-            height: 50.0,
-            filePath: 'test.jpg'
+            height: 50.0
         },
         checks: {
             'status is 201': (r) => r.status === 201,
