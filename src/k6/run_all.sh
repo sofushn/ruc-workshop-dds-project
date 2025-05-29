@@ -1,8 +1,8 @@
 #!/bin/sh
 
-TEST_SCRIPTS=" stress.js spike.js breakpoint.js"
-API_TEST_TYPES="GetMapById GetWaypointsByMapId"
-OTHER_TEST_TYPES="GetImageById PostWaypoint Combined"
+TEST_SCRIPTS=" stress.js breakpoint.js spike.js"
+API_TEST_TYPES="GetMapById GetWaypointsByMapId Combined"
+OTHER_TEST_TYPES="GetImageById PostWaypoint"
 SLEEP_DURATION_SECONDS=60
 DEFAULT_BASE_URL="http://localhost:8080"
 
@@ -33,10 +33,10 @@ get_api_stages() {
             echo "--stage 1m:500 --stage 4m:500 --stage 1m:0"
             ;;
         "spike.js")
-            echo "--stage 30s:1000 --stage 1m:0"
+            echo "--stage 30s:750 --stage 1m:0"
             ;;
         "breakpoint.js")
-            echo "--stage 10m:10000"
+            echo "--stage 10m:1500"
             ;;
     esac
 }
@@ -47,7 +47,7 @@ get_image_stages() {
             echo "--stage 1m:50 --stage 4m:50 --stage 1m:0"
             ;;
         "spike.js")
-            echo "--stage 15s:100 --stage 1m:0"
+            echo "--stage 15s:200 --stage 1m:0"
             ;;
         "breakpoint.js")
             echo "--stage 10m:500"
