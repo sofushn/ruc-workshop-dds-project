@@ -22,7 +22,7 @@ function getImageIds () {
 export function defaultSetup() {
     const testType = __ENV.TEST_TYPE ?? 'GetImageById';
     let imageIds = [];
-    if (testType == 'GetImageById') {
+    if (testType == 'GetImageById' || testType == 'Combined') {
         imageIds = getImageIds();
         console.log(`Fetched ${imageIds.length} image IDs.`);
         console.log(`Image Id: ${imageIds[0]}`);
