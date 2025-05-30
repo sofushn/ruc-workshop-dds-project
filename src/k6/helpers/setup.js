@@ -1,6 +1,6 @@
 import http from 'k6/http';
 
-export function getImageIds () {
+function getImageIds () {
     const BASE_URL = __ENV.BASE_URL ?? 'http://localhost:8080';
     const response = http.get(`${BASE_URL}/api/map/1/waypoints`);
     
@@ -15,4 +15,18 @@ export function getImageIds () {
     }
     
     return imageIds;
+}
+
+export function defaultSetup() {
+    const testType = __ENV.TEST_TYPE ?? 'GetImageById';
+    let imageIds = [];
+    if (testType == 'GetImageById' || testType == 'Combined') {
+        imageIds = getImageIds();
+        console.log(`Fetched ${imageIds.length} image IDs.`);
+        console.log(`Image Id: ${imageIds[0]}`);
+    }
+    
+    return { 
+        imageIds,
+    };
 }

@@ -32,13 +32,64 @@ docker run --rm -it --entrypoint /bin/sh -v ${PWD}:/scripts grafana/k6
 
 Navigate to `/scripts` folder and run k6 command.
 
-```
-timestamp=$(date +"%Y%m%d_%H%M%S")
-mkdir results
-timestamp=$(date +"%Y%m%d_%H%M%S") k6 run <test> --summary-export=results/summary-${timestamp}.json --out csv=results/results-${timestamp}.csv --out json=results/results-${timestamp}.json
+Run specific tests:
+```bash
+./run.sh <k6_test_script.js> [k6_options ...]
 
-timestamp=$(date +"%Y%m%d_%H%M%S") k6 run stress.js --summary-export=results/summary-${timestamp}.json --out csv=results/results-${timestamp}.csv --out json=results/results-${timestamp}.json --env BASE_URL=http://192.168.0.2:8080
+# Example
+./run.sh stress.js --env BASE_URL=http://192.168.0.2:8080 --env TEST_TYPE=GetImageById
 ```
+
+Run all tests:
+```bash
+./run_all.sh [BASE_URL (defaults to 'http://localhost:8080')]
+
+# Example
+./run_all.sh http://192.168.0.2:8080
+```
+
+Add `>> <filename> 2>&1` to write console output to file (replace `<filename>` with desired filename)
+
+### Tests
+
+
+__breakpoint__:
+```
+api: stages: [
+        { duration: '10m', target: 1000 },
+    ]
+image: stages: [
+        { duration: '10m', target: 200 },
+    ]
+```
+
+__spike__:
+```
+api: stages: [
+        { duration: "30s", target: 650 },
+        { duration: "1m", target: 0 },
+    ]
+        ,
+image: stages: [
+        { duration: "15s", target: 100 },
+        { duration: "1m", target: 0 },
+    ]
+```
+
+__stress__:
+```
+api: stages: [
+        { duration: "1m", target: 300 },
+        { duration: "4m", target: 300 },
+        { duration: "1m", target: 0 },
+    ],
+image: stages: [
+        { duration: '1m', target: 50 },
+        { duration: '4m', target: 50 },
+        { duration: '1m', target: 0 },
+    ],
+```
+
 
 ## Options
 

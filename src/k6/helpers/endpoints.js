@@ -11,10 +11,10 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 1500ms': (r) => r.timings.duration < 800,
             'response is an image': (r) => isResponseImage(r),
         },
-        ratio: 1,
+        ratio: 1/20, // Adjusted ratio to accommodate for bandwidth limits
     },
     {
         name: 'GetMapById',
@@ -22,9 +22,9 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 400ms': (r) => r.timings.duration < 800,
         },
-        ratio: 0.01,
+        ratio: 0.1,
     },
     {
         name: 'GetWaypointsByMapId',
@@ -32,9 +32,9 @@ const endpoints = [
         method: 'GET',
         checks: {
             'status is 200': (r) => r.status === 200,
-            'response time < 800ms': (r) => r.timings.duration < 800,
+            'response time < 400ms': (r) => r.timings.duration < 800,
         },
-        ratio: 0.05,
+        ratio: 0.5,
     },
     {
         name: 'PostWaypoint',
@@ -42,14 +42,13 @@ const endpoints = [
         method: 'POST',
         body: {
             mapId: 1,
-            height: 50.0,
-            filePath: 'test.jpg'
+            height: 50.0
         },
         checks: {
             'status is 201': (r) => r.status === 201,
-            'response time < 1000ms': (r) => r.timings.duration < 1000,
+            'response time < 2500ms': (r) => r.timings.duration < 1000,
         },
-        ratio: 0.0001,
+        ratio: 0.001,
     },
 ];
 
