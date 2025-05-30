@@ -16,3 +16,5 @@ spec:
           value: "http://image-store-primary.development.svc:8080"
         - name: POSTGRES_CONNECTION_STRING
           value: "Host=postgresql-ha-pgpool.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
+        # - name: UPLOAD_SINGLE_TEST_IMAGE
+        #   value: "true"

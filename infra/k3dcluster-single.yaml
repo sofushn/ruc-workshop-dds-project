@@ -1,14 +1,14 @@
 apiVersion: k3d.io/v1alpha5
 kind: Simple
 metadata:
-  name: street-view
+  name: street-view-single
 servers: 1
 agents: 3
 kubeAPI:
   host: localhost
 image: rancher/k3s:v1.32.3-k3s1
-subnet: "172.28.0.0/16"
+subnet: "172.30.0.0/16"
 ports:
-  - port: 8080:80
+  - port: 8090:80
     nodeFilters:
       - loadbalancer

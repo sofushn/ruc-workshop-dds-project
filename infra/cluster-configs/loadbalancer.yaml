@@ -6,7 +6,7 @@ metadata:
 spec:
   valuesContent: |-
     deployment:
-      replicas: 3 # Or 2, or more, depending on your needs
+      kind: DaemonSet
     logs:
       access:
         enabled: true

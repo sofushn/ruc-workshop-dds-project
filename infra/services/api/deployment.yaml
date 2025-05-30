@@ -4,7 +4,7 @@ metadata:
   name: backend-api
   namespace: development
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: backend-api
@@ -23,3 +23,13 @@ spec:
           value: "http://image-store.development.svc:8080"
         - name: ConnectionStrings__PostgresDatabase
           value: "Host=postgres.development.svc;Port=5432;Database=postgres;Username=postgres;Password=postgres"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            # memory: "256Mi"
+            # cpu: "200m"
+            memory: 768Mi
+            cpu: 600m
+            

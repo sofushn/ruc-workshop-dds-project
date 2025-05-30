@@ -1,0 +1,48 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: prometheus
+  namespace: kube-system
+spec:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: prometheus
+  version: 27.16.0
+  targetNamespace: metrics
+  createNamespace: true
+  valuesContent: |-
+    alertmanager:
+      enabled: false
+    kube-state-metrics:
+      enabled: false
+    prometheus-node-exporter:
+      enabled: false
+    prometheus-pushgateway:
+      enabled: false
+    extraScrapeConfigs: |
+      # The content below will be directly inserted into the Prometheus server's scrape_configs
+      - job_name: 'test-server'
+        metrics_path: /metrics
+        scrape_interval: 1s
+        static_configs:
+          - targets: ['192.168.0.18:9100']
+            labels:
+              job: prometheus
+              type: test-server
+
+      - job_name: 'cluster-server'
+        metrics_path: /metrics
+        scrape_interval: 1s
+        static_configs:
+          - targets: ['host.k3d.internal:9182']
+            labels:
+              job: prometheus
+              type: cluster-server
+
+      - job_name: 'test-laptop'
+        metrics_path: /metrics
+        scrape_interval: 1s
+        static_configs:
+          - targets: ['192.168.0.173:9182']
+            labels:
+              job: prometheus
+              type: cluster-server
