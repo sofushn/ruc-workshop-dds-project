@@ -13,6 +13,8 @@ string postgresConnectionString = Environment.GetEnvironmentVariable("POSTGRES_C
 string imageStoreUrl = Environment.GetEnvironmentVariable("IMAGE_STORE_URL") 
     ?? throw new ArgumentNullException("IMAGE_STORE_URL environment variable is not set");
 
+bool uploadSingleTestImage = Environment.GetEnvironmentVariable("UPLOAD_SINGLE_TEST_IMAGE")?.ToLowerInvariant() == "true";
+
 Console.WriteLine("Environment variables loaded successfully");
 Console.WriteLine($"Using Postgres connection string: {postgresConnectionString}");
 Console.WriteLine($"Using Image Store URL: {imageStoreUrl}");
@@ -37,6 +39,16 @@ using NpgsqlConnection connection = new(postgresConnectionString);
 await connection.OpenAsync();
 
 int mapId = await HandleMap();
+
+if (uploadSingleTestImage)
+{
+    Console.WriteLine("Uploading single test image for debugging purposes");
+    string testImageUrl = "https://raw.githubusercontent.com/sofushn/ruc-workshop-dds-project/main/src/svc/setup/test.jpg";
+    await HandleWaypoint(testImageUrl, mapId);
+    Console.WriteLine("Test image uploaded successfully");
+    return;
+}
+
 Console.WriteLine($"Getting waypoints from {waypointsUrl}");
 Console.WriteLine($"Found {waypoints.Count} waypoints to process");
 foreach (WaypointDownloadData waypoint in waypoints)
