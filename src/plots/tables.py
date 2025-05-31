@@ -70,11 +70,10 @@ for testtype in testtypes:
             checks = metrics.get("checks", {})
             http_reqs = metrics.get("http_reqs", {})
             # Duration values
-            avg = dur.get("avg", None)
             med = dur.get("med", None)
             p90 = dur.get("p(90)", None)
             p95 = dur.get("p(95)", None)
-            # Check values
+            # Check percent
             check_passes = checks.get("passes", None)
             check_fails = checks.get("fails", None)
             check_total = (check_passes or 0) + (check_fails or 0)
@@ -82,7 +81,7 @@ for testtype in testtypes:
             # Request count
             req_count = http_reqs.get("count", None)
 
-            # Format duration values to 2 decimal points, check values as int, percent as 2 decimals
+            # Format duration values to 2 decimal points, percent as 2 decimals
             def fmt_float(val):
                 if val is None:
                     return ""
@@ -93,9 +92,8 @@ for testtype in testtypes:
                 return f"{int(val)}"
 
             rows.append([
-                fmt_float(avg), fmt_float(med), fmt_float(p90), fmt_float(p95),
-                fmt_int(check_passes), fmt_int(check_fails), fmt_float(check_percent),
-                fmt_int(req_count)
+                fmt_float(med), fmt_float(p90), fmt_float(p95),
+                fmt_float(check_percent), fmt_int(req_count)
             ])
             index_labels.append(scenario.replace('_results', '').replace('_', ' ').title())
 
@@ -105,14 +103,14 @@ for testtype in testtypes:
         df = pd.DataFrame(
             rows,
             columns=[
-                "Avg Duration (ms)", "Median (ms)", "p90 (ms)", "p95 (ms)",
-                "Check Passes", "Check Fails", "Check Pass %", "Request Count"
+                "Median (ms)", "p90 (ms)", "p95 (ms)",
+                "Check Pass %", "Request Count"
             ],
             index=index_labels
         )
 
         # Plot as table and save as SVG
-        fig, ax = plt.subplots(figsize=(13, 2 + len(df) * 0.5))
+        fig, ax = plt.subplots(figsize=(10, 2 + len(df) * 0.5))
         ax.axis('off')
         tbl = ax.table(
             cellText=df.values,
