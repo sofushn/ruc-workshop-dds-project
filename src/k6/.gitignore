@@ -1,4 +1,1 @@
-results/multi_results/*
-results/single_large_results/*
-results/single_small_results/*
-*.pyc
+results/*
