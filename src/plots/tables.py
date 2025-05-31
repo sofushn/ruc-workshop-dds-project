@@ -67,17 +67,15 @@ for testtype in testtypes:
             # Try endpoint-specific, fallback to global
             dur_key = f"http_req_duration{{endpoint:{endpoint}}}"
             dur = metrics.get(dur_key, metrics.get("http_req_duration", {}))
-            checks = metrics.get("checks", {})
+            http_req_failed = metrics.get("http_req_failed", {})
             http_reqs = metrics.get("http_reqs", {})
             # Duration values
             med = dur.get("med", None)
             p90 = dur.get("p(90)", None)
             p95 = dur.get("p(95)", None)
-            # Check percent
-            check_passes = checks.get("passes", None)
-            check_fails = checks.get("fails", None)
-            check_total = (check_passes or 0) + (check_fails or 0)
-            check_percent = (check_passes / check_total * 100) if check_total else None
+            # http_req_failed percent (as success percent)
+            fail_value = http_req_failed.get("value", None)
+            pass_percent = (100 - fail_value * 100) if fail_value is not None else None
             # Request count
             req_count = http_reqs.get("count", None)
 
@@ -93,7 +91,7 @@ for testtype in testtypes:
 
             rows.append([
                 fmt_float(med), fmt_float(p90), fmt_float(p95),
-                fmt_float(check_percent), fmt_int(req_count)
+                fmt_float(pass_percent), fmt_int(req_count)
             ])
             index_labels.append(scenario.replace('_results', '').replace('_', ' ').title())
 
@@ -104,13 +102,13 @@ for testtype in testtypes:
             rows,
             columns=[
                 "Median (ms)", "p90 (ms)", "p95 (ms)",
-                "Check Pass %", "Request Count"
+                "Request Success %", "Request Count"
             ],
             index=index_labels
         )
 
         # Plot as table and save as SVG
-        fig, ax = plt.subplots(figsize=(10, 2 + len(df) * 0.5))
+        fig, ax = plt.subplots(figsize=(10, 0.7 + len(df) * 0.4))
         ax.axis('off')
         tbl = ax.table(
             cellText=df.values,
@@ -122,8 +120,8 @@ for testtype in testtypes:
         tbl.auto_set_font_size(False)
         tbl.set_fontsize(10)
         tbl.scale(1.2, 1.2)
-        plt.title(f"Summary Table: {testtype} | {endpoint}", fontsize=14)
-        plt.tight_layout()
+        # plt.tight_layout()  # Optionally remove this
+        plt.subplots_adjust(top=1, bottom=0, left=0, right=1)
         out_path = os.path.join(output_dir, f"{testtype}_{endpoint}_summary_table.svg")
-        plt.savefig(out_path)
+        plt.savefig(out_path, bbox_inches='tight')
         plt.close()

@@ -64,17 +64,16 @@ for testtype in testtypes:
                 label=scenario.replace('_', ' ').title()
             )
 
-            # --- Bottom: Check fail rate ---
-            if 'check' in csvData.columns:
-                check_status = 'status is 201' if test_type_name == 'PostWaypoint' else 'status is 200'
-                check_data = csvData[csvData['check'] == check_status].copy()
-                if not check_data.empty:
-                    check_data['timestamp'] = check_data['timestamp'] - min_timestamp
-                    check_grouped = check_data.groupby('timestamp')['metric_value'].agg(['mean', 'count']).reset_index()
-                    # Fail rate is (1 - mean) * 100
+            # --- Bottom: Request fail rate using http_req_failed ---
+            if 'http_req_failed' in csvData['metric_name'].values:
+                failed_data = csvData[csvData['metric_name'] == 'http_req_failed'].copy()
+                if not failed_data.empty:
+                    failed_data['timestamp'] = failed_data['timestamp'] - min_timestamp
+                    # Fail rate is value * 100 (value is fraction failed)
+                    fail_grouped = failed_data.groupby('timestamp')['metric_value'].mean().reset_index()
                     axes[2].plot(
-                        check_grouped['timestamp'],
-                        (1 - check_grouped['mean']) * 100,
+                        fail_grouped['timestamp'],
+                        fail_grouped['metric_value'] * 100,
                         label=scenario.replace('_', ' ').title()
                     )
             found_any = True
@@ -177,4 +176,43 @@ for testtype in testtypes:
             plt.xlabel('Timestamp (Seconds)')
             plt.tight_layout()
             plt.savefig(os.path.join(output_dir, f"{testtype}_{endpoint}_multiplot_lines_check.svg"))
+            plt.close()
+
+            # --- Request fail rate plot using http_req_failed ---
+            plt.figure(figsize=(14, 4))
+            max_fail_rate = 0  # Track the maximum fail rate
+            fail_data_per_scenario = []
+            for scenario in scenarios:
+                key = f"{scenario}/{testtype}/{endpoint}"
+                if key not in all_results:
+                    continue
+                results_csv = all_results[key]
+                csvData = pd.read_csv(results_csv, low_memory=False)
+                metric_name = 'http_req_failed'
+                if metric_name in csvData['metric_name'].values:
+                    failed_data = csvData[csvData['metric_name'] == metric_name].copy()
+                    if not failed_data.empty:
+                        min_timestamp = failed_data['timestamp'].min()
+                        failed_data['timestamp'] = failed_data['timestamp'] - min_timestamp
+                        fail_grouped = failed_data.groupby('timestamp')['metric_value'].mean().reset_index()
+                        fail_grouped['fail_rate_percent'] = fail_grouped['metric_value'] * 100
+                        max_fail_rate = max(max_fail_rate, fail_grouped['fail_rate_percent'].max())
+                        fail_data_per_scenario.append((fail_grouped, scenario))
+            for fail_grouped, scenario in fail_data_per_scenario:
+                plt.plot(
+                    fail_grouped['timestamp'],
+                    fail_grouped['fail_rate_percent'],
+                    label=scenario.replace('_', ' ').title()
+                )
+            plt.ylabel('Request Fail Rate (%)')
+            # Avoid singular ylim if max_fail_rate is 0 (no failed requests)
+            if max_fail_rate == 0:
+                plt.ylim(0, 1)  # Show a minimal range for empty/failure-free plots
+            else:
+                plt.ylim(0, min(100, max_fail_rate * 1.05))  # Set upper limit to 5% above max, but not above 100%
+            plt.title('Request Fail Rate Over Time')
+            plt.legend()
+            plt.xlabel('Timestamp (Seconds)')
+            plt.tight_layout()
+            plt.savefig(os.path.join(output_dir, f"{testtype}_{endpoint}_multiplot_lines_failrate.svg"))
             plt.close()
